@@ -1,0 +1,46 @@
+﻿@model IEnumerable<StudentRanking.DataAccess.FacultyRankList>
+
+@{
+    ViewBag.Title = "FacultyRankList";
+    int i = 1;
+}
+
+<div id="resultTable">
+    <table>
+        @if (Model.Count() != 0)
+        {
+            <tr>
+                <th>
+                    <label>Номер</label>
+                </th>
+                <th>
+                    <label>ЕГН</label>
+                </th>
+                <th>
+                    <label>Бал</label>
+                </th>
+                <th></th>
+            </tr>
+
+
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @i
+
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EGN)
+
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TotalGrade)
+
+                    </td>
+                </tr>
+                i++;
+            }
+        }
+    </table>
+</div>

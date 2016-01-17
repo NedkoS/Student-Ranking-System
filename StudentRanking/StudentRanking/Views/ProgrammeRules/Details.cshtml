@@ -1,0 +1,29 @@
+﻿@model StudentRanking.DataAccess.ProgrammeRules
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>ProgrammeRules</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.MaleCount)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.MaleCount)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.FemaleCount)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FemaleCount)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ProgrammeName }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

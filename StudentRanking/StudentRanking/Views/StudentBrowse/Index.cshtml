@@ -1,0 +1,85 @@
+﻿@model IEnumerable<StudentRanking.DataAccess.Student>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<style>
+    table, th, td {
+        border: 0px solid black;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 15px;
+    }
+</style>
+
+
+<h3>Търсене по ЕГН</h3>
+
+
+@using (Html.BeginForm("Details", "StudentBrowse"))
+{
+    @Html.TextBox("id")
+    <input type="submit" value="Търсене" />
+}
+
+        <p>
+            @Html.ActionLink("Добавяне на студент", "Create")
+        </p>
+        <table>
+            <tr>
+                <th>
+                    Първо име
+                </th>
+                <th>
+                    Фамилия
+                </th>
+                <th>
+                    ЕГН
+                </th>
+                <th>
+                    Имейл
+                </th>
+                <th>
+                    Пол
+                </th>
+                <th>
+                    Записан
+                </th>
+                <th></th>
+            </tr>
+
+        @foreach (var item in Model) {
+    <tr >
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <th>
+                    @Html.DisplayFor(model => item.EGN)
+                </th>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    <label>@(((bool)item.Gender)?"Мъж":"Жена")</label>
+                    <!--Html.DisplayFor(modelItem => ((bool)item.Gender)? "Male" : "Female")-->
+                </td>
+                <td>
+                    <label>@(((bool)item.IsEnrolled) ? "Да" : "Не")</label>
+                   <!-- Html.DisplayFor(modelItem => item.IsEnrolled)-->
+                </td>
+                <td>
+                    @Html.ActionLink("Редактиране", "Edit", new { id=item.EGN }) |
+                    @Html.ActionLink("Детайли", "Details", new { id=item.EGN }) |
+                    @Html.ActionLink("Изтриване", "Delete", new { id=item.EGN })
+                </td>
+            </tr>
+}
+
+        </table>

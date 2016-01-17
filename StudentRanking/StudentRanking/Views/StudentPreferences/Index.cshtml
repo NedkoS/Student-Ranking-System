@@ -1,0 +1,140 @@
+﻿@model IEnumerable<StudentRanking.Models.StudentPreferences>
+@{
+    ViewBag.Title = "StudentPreferences";
+    var res = ViewData["result"] as List<StudentRanking.Models.StudentPreferences>;
+    bool isAddingPreferencesEnd = (bool)ViewData["isAddingPreferencesEnd"];
+}
+
+<style>
+    table, th, td {
+        border: 0px solid black;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 15px;
+    }
+</style>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#programmeName").prop("disabled", true);
+            $("#faculty").change(function () {
+                if ($("#faculty").val() != "Please select") {
+                    var options = {};
+                    options.url = "/StudentPreferences/getprogrammes";
+                    options.type = "POST";
+                    options.data = JSON.stringify({ faculty: $("#faculty").val() });
+                    options.dataType = "json";
+                    //<a href="~/Views/ProgrammeRules/Index.cshtml">~/Views/ProgrammeRules/Index.cshtml</a>
+                    options.contentType = "application/json";
+                    options.success = function (states) {
+                        $("#programmeName").empty();
+                        for (var i = 0; i < states.length; i++) {
+                            $("#programmeName").append("<option>" + states[i] + "</option>");
+                        }
+                        $("#programmeName").prop("disabled", false);
+                    };
+                    options.error = function () { alert("Error retrieving states!"); };
+                    $.ajax(options);
+                }
+                else {
+                    $("#programmeName").empty();
+                    $("#programmeName").prop("disabled", true);
+                }
+            });
+        });
+
+        function SubmitClick() {
+            $.ajax({
+                type: 'POST',
+                url: "/StudentPreferences/index",
+                data: {
+                    faculty: $("#faculty option:selected").text(),
+                    programmeName: $("#programmeName option:selected").text()
+                },
+                success: function (data) {
+                    $('#resultTable').html(data);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+                }
+
+            });
+        };
+
+
+        function Delete() {
+
+            $.ajax({
+
+                type: 'post',
+                url: "/StudentPreferences/deleteLastPreference",
+                success: function (result) {
+                    window.location.href = result.Url;
+                }
+
+            });
+        };
+
+
+        
+
+    </script>
+}
+
+
+<h2>@ViewData["userName"]</h2>
+
+@if (!isAddingPreferencesEnd)
+{
+    <h2>Подаване на желания</h2>
+    <div><h4>Изберете факултет</h4></div>
+    
+    @Html.DropDownList("faculty", ViewData["faculties"] as SelectList, new { @id = "faculty" })
+    <select id="programmeName"></select>
+    <input type="submit" value="Потвърдете" onclick="javascript:SubmitClick()" />
+    <input type="submit" value="Изтрийте последното си желание" onclick="javascript:Delete()" />
+}
+
+
+<div id="resultTable">
+    @Html.Partial("_StudentPreferencesTable", Model)
+</div>
+
+@*<div id="resultTable">
+    <table>
+        <tr>
+            <th>
+                <label>Номер на желание</label>
+            </th>
+            <th>
+                <label>Факултет</label>
+            </th>
+            <th>
+                <label>Специалност</label>
+            </th>
+            <th></th>
+        </tr>
+
+        @if (res != null)
+        {
+            foreach (var item in res)
+            {
+                <tr>
+                    <td>
+                        @item.PrefNumber
+                    </td>
+                    <td>
+                        @item.Faculty
+                    </td>
+                    <td>
+                        @item.ProgrammeName
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+</div>*@

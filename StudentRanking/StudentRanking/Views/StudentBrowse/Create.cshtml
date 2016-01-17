@@ -1,0 +1,88 @@
+﻿@model StudentRanking.DataAccess.Student
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Добавяне на студент</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Student</legend>
+
+        <div class="editor-label">
+            <label>Първо име</label>
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FirstName)
+            @Html.ValidationMessageFor(model => model.FirstName)
+        </div>
+
+        <div class="editor-label">
+            <label>Фамилия</label>
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.LastName)
+            @Html.ValidationMessageFor(model => model.LastName)
+        </div>
+
+        <div class="editor-label">
+            <label>ЕГН</label>
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.EGN)
+            @Html.ValidationMessageFor(model => model.EGN)
+        </div>
+
+        <div class="editor-label">
+            <label>Имейл</label>
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Email)
+            @Html.ValidationMessageFor(model => model.Email)
+        </div>
+
+        <div class="editor-field">
+            <label>Пол</label>
+        </div>
+
+        <div class="editor-field">
+            <label style="font-size: 1.1em;float:left;margin-right:50px">
+                @Html.RadioButtonFor(model => model.Gender, true,
+                              new { style = "border: 1px solid #e2e2e2;margin: 5px 0 6px 0;padding: 5px;width: 14px" })
+                Мъж
+            </label>
+
+            <label style="font-size: 1.1em">
+                @Html.RadioButtonFor(model => model.Gender, false,
+                              new { style = "border: 1px solid #e2e2e2;margin: 5px 0 6px 0;padding: 5px;width: 14px" })
+                Жена
+            </label>
+            @Html.ValidationMessageFor(model => model.Gender)
+        </div>
+
+        @*<div class="editor-field">
+            <label>Парола</label>
+        </div>
+
+        <div>
+            <label>@ViewBag.Password</label>
+        </div>*@
+
+        <p>
+            <input type="submit" value="Добавяне" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Назад към списъка", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

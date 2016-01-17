@@ -1,0 +1,55 @@
+﻿@model StudentRanking.DataAccess.Exam
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Exam</legend>
+
+        @Html.HiddenFor(model => model.ExamName)
+
+        @Html.HiddenFor(model => model.StudentEGN)
+
+        <div class="editor-label">
+            <h4>ЕГН</h4>
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.StudentEGN)
+            @Html.ValidationMessageFor(model => model.StudentEGN)
+        </div>
+
+        <div class="editor-label">
+            <h4>Име на изпит</h4>
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ExamName)
+            @Html.ValidationMessageFor(model => model.ExamName)
+        </div>
+
+        <div class="editor-label">
+            <h4>Оценка</h4>
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Grade)
+            @Html.ValidationMessageFor(model => model.Grade)
+        </div>
+
+        <p>
+            <input type="submit" value="Запиши" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Назад към списъка", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

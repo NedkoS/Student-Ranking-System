@@ -1,0 +1,96 @@
+﻿@model IEnumerable<StudentRanking.DataAccess.ProgrammeProperties>
+
+<style>
+    table, th, td {
+        border: 0px solid black;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 15px;
+    }
+</style>
+
+@section Scripts
+{
+  <!-- <script src="@Url.Content("~/Scripts/CascadeDropDownList.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.cascadingDropDown.js")"></script>-->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#programmeName").prop("disabled", true);
+        $("#faculty").change(function () {
+            if ($("#faculty").val() != "Please select") {
+                var options = {};
+                options.url = "/ProgrammeRules/getprogrammes";
+                options.type = "POST";
+                options.data = JSON.stringify({ faculty: $("#faculty").val() });
+                options.dataType = "json";
+                options.contentType = "application/json";
+                options.success = function (states) {
+                    $("#programmeName").empty();
+                    for (var i = 0; i < states.length; i++) {
+                        $("#programmeName").append("<option>" + states[i] + "</option>");
+                    }
+                    $("#programmeName").prop("disabled", false);
+                };
+                //options.error = function () { alert("Error retrieving states!"); };
+                $.ajax(options);
+            }
+            else {
+                $("#programmeName").empty();
+                $("#programmeName").prop("disabled", true);
+            }
+        });
+    });
+
+    function SubmitClick() {
+        $.ajax({
+            type: 'POST',
+            url: "/ProgrammeRules/index",
+            data: {
+                faculty: $("#faculty option:selected").text(),
+                programmeName: $("#programmeName option:selected").text()
+            },
+            success: function (data) {
+                $('#resultTable').html(data);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert(errorThrown);
+            }
+
+        });
+    };
+
+    function SaveClick() {
+        $.ajax({
+            type: 'POST',
+            url: "/ProgrammeRules/saveCounts",
+            data: {
+                maleCount: $("#maleCount").val(),
+                femaleCount: $("#femaleCount").val(),
+                programmeName: $("#programmeName option:selected").text()
+            }
+
+        });
+    };
+
+</script>
+}
+
+@{
+    ViewBag.Title = "Index";
+    var programmes = ViewBag.Programmes as Dictionary<String, List<String>>;
+}
+
+<div><h4>Изберете факултет</h4></div>
+@Html.DropDownList("faculty", ViewData["faculties"] as SelectList, new { @id = "faculty" })
+<select id="programmeName"></select>
+<input type="submit" value="Покажи" onclick="javascript:SubmitClick()" />
+
+<br>
+
+
+
+<div id="resultTable">
+    @Html.Partial("_ProgrammePropertiesTable", Model)
+</div>

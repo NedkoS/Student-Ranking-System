@@ -1,0 +1,9 @@
+<publishData>
+  <publishProfile
+    publishUrl="https://senh93-001-site1.smarterasp.net:8172/msdeploy.axd"
+    msdeploySite="senh93-001-site1"
+    destinationAppUrl="http://senh93-001-site1.smarterasp.net/"
+    profileName="Default Settings"
+    publishMethod="MSDeploy"
+    userName="ifc\senh93-001" />
+</publishData>

@@ -1,0 +1,107 @@
+﻿@model IEnumerable<StudentRanking.DataAccess.ProgrammeProperties>
+
+@{
+    ViewBag.Title = "ProgrammePropertiesTable";
+}
+
+<div id="resultTable">
+
+    @if (Model.Count() != 0)
+    {
+        <label>Брой мъже</label>
+        @Html.TextBox("maleCount", Model.First().MaleCount)
+        <label>Брой жени</label>
+        @Html.TextBox("femaleCount", Model.First().FemaleCount)
+        <input type="submit" value="Запиши" onclick="javascript:SaveClick()" />
+    }
+    else
+    {
+        <label>Брой мъже</label>
+        @Html.TextBox("maleCount")
+        <label>Брой жени</label>
+        @Html.TextBox("femaleCount")
+        <input type="submit" value="Запиши" onclick="javascript:SaveClick()" />
+    }
+
+@if (Model.Count() != 0)
+{
+    <table>
+        <tr>
+            <th>
+                <label>Коефициент 1</label>
+            </th>
+            <th>
+                <label>Изпит 1</label>
+            </th>
+            <th>
+                <label>Коефициент 2</label>
+            </th>
+            <th>
+                <label>Изпит 2</label>
+            </th>
+            <th>
+                <label>Коефициент 3</label>
+            </th>
+            <th>
+                <label>Изпит 3</label>
+            </th>
+            <th>
+                <label>Коефициент 4</label>
+            </th>
+            <th>
+                <label>Изпит 4</label>
+            </th>
+            <th></th>
+        </tr>
+
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    @if (item.C1 > 0)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.C1)
+                        </td>
+                    }
+                    
+                    <td>
+                        @Html.DisplayFor(modelItem => item.X)
+                    </td>
+                    @if (item.C2 > 0)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.C2)
+                        </td>
+                    }
+                    
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Y)
+                    </td>
+                    @if (item.C3 > 0)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.C3)
+                        </td>
+                    }
+                    
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Z)
+                    </td>
+                    @if (item.C4 > 0)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.C4)
+                        </td>
+                    }
+                    
+                    <td>
+                        @Html.DisplayFor(modelItem => item.W)
+                    </td>
+                </tr>
+            }
+
+        
+    </table>
+}
+</div>

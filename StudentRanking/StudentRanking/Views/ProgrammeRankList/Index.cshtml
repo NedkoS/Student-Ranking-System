@@ -1,0 +1,209 @@
+﻿@model IEnumerable<StudentRanking.DataAccess.FacultyRankList>
+@{
+    ViewBag.Title = "FacultyRankList";
+    var res = ViewData["result"] as List<StudentRanking.DataAccess.FacultyRankList>;
+    bool isMainAdmin = (bool)ViewData["mainAdmin"];
+    
+    bool isFirstRankListPublished = (bool)ViewData["isFirstRankListPublished"];
+    bool isFirstRankingDate = (bool)ViewData["isFirstRankingDate"];
+
+    bool isSecondRankListPublished = (bool)ViewData["isSecondRankListPublished"];
+    bool isSecondRankingDate = (bool)ViewData["isSecondRankingDate"];
+
+    bool isThirdRankListPublished = (bool)ViewData["isThirdRankListPublished"];
+    bool isThirdRankingDate = (bool)ViewData["isThirdRankingDate"];
+    
+}
+
+<style>
+    table, th, td {
+        border: 0px solid black;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 15px;
+    }
+</style>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#programmeName").prop("disabled", true);
+            $("#faculty").change(function () {
+                if ($("#faculty").val() != "Please select") {
+                    var options = {};
+                    options.url = "/ProgrammeRankList/getprogrammes";
+                    options.type = "POST";
+                    options.data = JSON.stringify({ faculty: $("#faculty").val() });
+                    options.dataType = "json";
+                    //<a href="~/Views/ProgrammeRules/Index.cshtml">~/Views/ProgrammeRules/Index.cshtml</a>
+                    options.contentType = "application/json";
+                    options.success = function (states) {
+                        $("#programmeName").empty();
+                        for (var i = 0; i < states.length; i++) {
+                            $("#programmeName").append("<option>" + states[i] + "</option>");
+                        }
+                        $("#programmeName").prop("disabled", false);
+                    };
+                    options.error = function () { alert("Error retrieving states!"); };
+                    $.ajax(options);
+                }
+                else {
+                    $("#programmeName").empty();
+                    $("#programmeName").prop("disabled", true);
+                }
+            });
+        });
+
+        function SubmitClick() {
+            $.ajax({
+                type: 'POST',
+                url: "/ProgrammeRankList/index",
+                data: {
+                    faculty: $("#faculty option:selected").text(),
+                    programmeName: $("#programmeName option:selected").text()
+                },
+                success: function (data) {
+                    $('#resultTable').html(data);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+                }
+
+            });
+        };
+
+        function Publish() {
+            $.ajax({
+
+                type: 'post',
+                url: "/ProgrammeRankList/algoStart",
+                success: function (result) {
+                    window.location.href = result.Url;
+                }
+
+            });
+        };
+    </script>
+}
+
+
+
+
+@if (isFirstRankingDate && !isSecondRankingDate)
+{
+    if (isMainAdmin && !isFirstRankListPublished)
+    {
+        <label>Натиснете бутона, за да публикувате първото класирането.</label>
+        <input type="submit" value="Публикувайте" onclick="javascript: Publish()" />
+    }
+    else
+    {
+        if (!isMainAdmin && !isFirstRankListPublished)
+        {
+            <label>Първото класирането не е публикувано. Само главният администратор може да публикува класирането.</label>
+        }
+        else
+        {
+            if (isFirstRankListPublished)
+            {
+                <h2>Първо класиране по специалност</h2>
+                <br>
+                <div><h4>Изберете факултет:</h4></div>
+                @Html.DropDownList("faculty", ViewData["faculties"] as SelectList, new { @id = "faculty" })
+                <select id="programmeName"></select>
+                <input type="submit" value="Потвърдете" onclick="javascript:SubmitClick()" />
+
+                <div id="resultTable">
+                    @Html.Partial("_ProgrammeRankListTable", Model)
+                </div>
+            }
+        }
+
+    }
+
+
+}
+else
+{
+    if (!isSecondRankingDate)
+    {
+        <label>Не е настъпила датата за публикуване на първото класирането.</label>
+    }
+
+}
+
+
+@if (isSecondRankingDate && !isThirdRankingDate)
+{
+    if (isMainAdmin && !isSecondRankListPublished)
+    {
+        <label>Натиснете бутона, за да публикувате второто класирането.</label>
+        <input type="submit" value="Публикувайте" onclick="javascript: Publish()" />
+    }
+    else
+    {
+        if (!isMainAdmin && !isSecondRankListPublished)
+        {
+            <label>Второто класирането не е публикувано. Само главният администратор може да публикува класирането.</label>
+        }
+        else
+        {
+            if (isSecondRankListPublished)
+            {
+                <h2>Второ класиране по специалност</h2>
+                <br>
+                <div><h4>Изберете факултет:</h4></div>
+                @Html.DropDownList("faculty", ViewData["faculties"] as SelectList, new { @id = "faculty" })
+                <select id="programmeName"></select>
+                <input type="submit" value="Потвърдете" onclick="javascript:SubmitClick()" />
+
+                <div id="resultTable">
+                    @Html.Partial("_ProgrammeRankListTable", Model)
+                </div>
+            }
+        }
+
+    }
+
+
+}
+
+
+
+@if (isThirdRankingDate)
+{
+    if (isMainAdmin && !isThirdRankListPublished)
+    {
+        <label>Натиснете бутона, за да публикувате третото класирането.</label>
+        <input type="submit" value="Публикувайте" onclick="javascript: Publish()" />
+    }
+    else
+    {
+        if (!isMainAdmin && !isThirdRankListPublished)
+        {
+            <label>Третото класирането не е публикувано. Само главният администратор може да публикува класирането.</label>
+        }
+        else
+        {
+            if (isThirdRankListPublished)
+            {
+                <h2>Трето класиране по специалност</h2>
+                <br>
+                <div><h4>Изберете факултет:</h4></div>
+                @Html.DropDownList("faculty", ViewData["faculties"] as SelectList, new { @id = "faculty" })
+                <select id="programmeName"></select>
+                <input type="submit" value="Потвърдете" onclick="javascript:SubmitClick()" />
+
+                <div id="resultTable">
+                    @Html.Partial("_ProgrammeRankListTable", Model)
+                </div>
+            }
+        }
+
+    }
+
+
+}

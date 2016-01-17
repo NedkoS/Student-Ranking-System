@@ -1,0 +1,93 @@
+﻿@model IEnumerable<StudentRanking.DataAccess.Exam>
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        function SubmitClick() {
+            $.ajax({
+                type: 'POST',
+                url: "/Exam/Index",
+                data: {
+                    egn: $("#egn").val()
+                },
+                success: function (data) {
+                    $('#resultTable').html(data);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+                }
+
+            });
+
+
+        };
+
+    </script>
+}
+
+
+
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+    table, th, td {
+        border: 0px solid black;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 15px;
+    }
+</style>
+
+
+<p>
+    @Html.ActionLink("Добавяне на оценка", "Create")
+</p>
+
+<label>Въведете ЕГН-то на студента</label>
+@Html.TextBox("egn")
+<input type="submit" value="Потвърди" onclick="javascript:SubmitClick()" />
+
+<div id="resultTable">
+    @Html.Partial("_StudentExamsGrades", Model)
+</div>
+
+@*<table>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.StudentEGN)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ExamName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Grade)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.StudentEGN)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ExamName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Grade)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { examName = item.ExamName, studentEGN = item.StudentEGN  }) |
+            @Html.ActionLink("Details", "Details", new { examName = item.ExamName, studentEGN = item.StudentEGN }) |
+            @Html.ActionLink("Delete", "Delete", new { examName = item.ExamName, studentEGN = item.StudentEGN })
+        </td>
+    </tr>
+}
+
+</table>*@

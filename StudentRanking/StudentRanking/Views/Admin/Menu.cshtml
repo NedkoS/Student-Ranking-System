@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "Меню";
+}
+
+<h1>Меню</h1>
+
+<!--<hgroup class="title">
+    <h1>@ViewBag.Title.</h1>
+</hgroup>-->
+
+<section >
+    @using (Html.BeginForm(new { ReturnUrl = ViewBag.ReturnUrl }))
+    {
+
+        <div>
+            <ol>
+                <li>
+                    @Html.ActionLink("Регистриране на студент", "Create","StudentBrowse")
+                </li>
+                <li>
+                    @Html.ActionLink("Търсене на студент", "Index", "StudentBrowse")
+                </li>
+                <li>
+                    @Html.ActionLink("Класиране", "Index", "ProgrammeRankList")
+                </li>
+                <li>
+                    @Html.ActionLink("Задаване на квоти", "Index", "ProgrammeRules")
+                </li>
+                <li>
+                    @Html.ActionLink("Оценки от изпити", "Index", "Exam")
+                </li>
+                @if (User.Identity.Name == "Admin")
+                {
+                    <li>
+                        @Html.ActionLink("Определяне срокове на кампанията", "Index", "CampaignRankingDates")
+                    </li>
+                    <li>
+                        @Html.ActionLink("Регистриране на администратори", "RegisterAdmin", "Account")
+                    </li>
+                }
+                
+            </ol>
+        </div>
+    }
+</section>

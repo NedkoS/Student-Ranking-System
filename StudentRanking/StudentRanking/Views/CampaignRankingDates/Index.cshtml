@@ -1,0 +1,99 @@
+﻿@model StudentRanking.Models.CampaignRankingDates
+
+@{
+    ViewBag.Title = "Етапи на кампанията";
+}
+
+<h2>Етапи на кампанията</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Exam</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.StudentPreferenceFirstDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.StudentPreferenceFirstDate, new { @id = "firstPreferencesDate" })
+            @Html.ValidationMessageFor(model => model.StudentPreferenceFirstDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.StudentPreferenceLastDate)
+        </div>
+        <div class="editor-field">
+
+            @Html.EditorFor(model => model.StudentPreferenceLastDate, new { @id = "secondPreferencesDate" })
+                @Html.ValidationMessageFor(model => model.StudentPreferenceLastDate)
+            @*@Html.DropDownListFor(model => model.ExamName, ViewData["currentExamName"] as SelectList)*@
+        </div>
+        <br>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FirstRankingDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FirstRankingDate, new { @id = "firstRankingDate" })
+            @Html.ValidationMessageFor(model => model.FirstRankingDate)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SecondRankingDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SecondRankingDate, new { @id = "secondRankingDate" })
+            @Html.ValidationMessageFor(model => model.SecondRankingDate)
+        </div>
+
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ThirdRankingDate)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ThirdRankingDate, new { @id = "thirdRankingDate" })
+            @Html.ValidationMessageFor(model => model.ThirdRankingDate)
+        </div>
+
+
+
+
+
+        <p>
+            <input type="submit" value="Запиши" onclick="javascript:SubmitClick()"  />
+        </p>
+    </fieldset>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    @*<script type="text/javascript">
+
+        function SubmitClick() {
+
+                $.ajax({
+
+                    type: 'post',
+                    url: "/RankingDates/index",
+                    data: {
+
+                        preferencesFirstDate: $("#firstPreferencesDate").val(),
+                        preferencesLastDate: $("#lastPreferencesDate").val(),
+                        firstRankingDate: $("#firstRankingDate").val,
+                        secondRankingDate: $("#secondRankingDate").val(),
+                        lastRankingDate: $("#lastRankingDate").val()
+
+                    }
+
+                });
+
+
+
+        };
+
+    </script>*@
+}

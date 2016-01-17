@@ -1,0 +1,43 @@
+﻿@model IEnumerable<StudentRanking.Models.StudentPreferences>
+
+@{
+    ViewBag.Title = "StudentPreferncesTable";
+}
+
+<div id="resultTable">
+    <table>
+    @if (Model.Count() != 0 )
+    {
+        <tr>
+            <th>
+                <label>Номер на желание</label>
+            </th>
+            <th>
+                <label>Факултет</label>
+            </th>
+            <th>
+                <label>Специалност</label>
+            </th>
+            <th></th>
+        </tr>
+
+        
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PrefNumber)
+                        
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Faculty)
+                        
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProgrammeName)
+                    </td>
+                </tr>
+            }
+    }
+    </table>
+</div>

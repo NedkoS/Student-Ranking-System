@@ -1,0 +1,78 @@
+﻿@model StudentRanking.DataAccess.Student
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Детайли</h2>
+
+<fieldset>
+    <legend>Student</legend>
+
+    <div class="display-label">
+         <h4>Първо име</h4>
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FirstName)
+    </div>
+    <br/>
+
+    <div class="display-label">
+        <h4>Фамилия</h4>
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LastName)
+    </div>
+    <br/>
+
+
+    <div class="editor-label">
+        <h4>ЕГН</h4>
+    </div>
+    <div class="editor-field">
+        @Html.DisplayFor(model => model.EGN)
+    </div>
+    <br>
+
+    <div class="display-label">
+        <h4>Имейл</h4>
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Email)
+    </div>
+    <br>
+
+    <div class="display-label">
+        <h4>Пол</h4>
+    </div>
+    <div class="display-field">
+        @if ((bool)Model.Gender)
+        {
+            <label>Мъж</label>
+        }
+        else
+        {
+            <label>Жена</label>
+        }
+    </div>
+    <br>
+
+    <div class="display-label">
+        <h4>Записан</h4>
+    </div>
+    <div class="display-field">
+        @if ((bool)Model.IsEnrolled)
+        {
+            <label>Да</label>
+        }
+        else
+        {
+            <label>Не</label>
+        }
+    </div>
+    <br>
+</fieldset>
+<p>
+    @Html.ActionLink("Редактиране", "Edit", new { id=Model.EGN }) |
+    @Html.ActionLink("Назад към списъка", "Index")
+</p>

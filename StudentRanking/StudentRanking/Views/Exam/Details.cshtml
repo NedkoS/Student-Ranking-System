@@ -1,0 +1,37 @@
+﻿@model StudentRanking.DataAccess.Exam
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Детайли</h2>
+
+<fieldset>
+    <legend>Exam</legend>
+
+    <div class="display-label">
+        <h4>ЕГН</h4>
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StudentEGN)
+    </div>
+    <br>
+    <div class="display-label">
+        <h4>Име на изпит</h4>
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ExamName)
+    </div>
+    <br>
+
+    <div class="display-label">
+        <h4>Оценка</h4>
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Grade)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Редактиране", "Edit", new { examName = Model.ExamName, studentEGN = Model.StudentEGN }) 
+    @Html.ActionLink("Назад към списъка", "Index")
+</p>

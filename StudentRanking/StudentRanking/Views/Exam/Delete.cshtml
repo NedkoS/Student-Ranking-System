@@ -1,0 +1,41 @@
+﻿@model StudentRanking.DataAccess.Exam
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Изтриване</h2>
+
+<h3>Сигурни ли сте, че искате да направите това?</h3>
+<fieldset>
+    <legend>Exam</legend>
+    <div class="display-label">
+        <h4>ЕГН</h4>
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StudentEGN)
+    </div>
+    <br />
+
+    <div class="display-label">
+        <h4>Име на изпит</h4>
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ExamName)
+    </div>
+    <br />
+
+    <div class="display-label">
+        <h4>Оценка</h4>
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Grade)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Изтрий" /> |
+        @Html.ActionLink("Назад към списъка", "Index")
+    </p>
+}

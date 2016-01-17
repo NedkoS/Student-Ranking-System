@@ -1,0 +1,148 @@
+﻿@model IEnumerable<StudentRanking.Models.StudentRankingInformation>
+
+@{
+    ViewBag.Title = "StudentRankingInformation";
+    bool isEnrolled = (bool)ViewData["isEnrolled"];
+    bool isFirstRankListPublished = (bool)ViewData["isFirstRankListPublished"];
+    bool isSecondRankListPublished = (bool)ViewData["isSecondRankListPublished"];
+    bool isThirdRankListPublished = (bool)ViewData["isThirdRankListPublished"];
+    String enrolledProgramme = (String)ViewData["enrolledProgramme"];
+    String faculty = (String)ViewData["faculty"];
+    String str = "";
+
+    if (isFirstRankListPublished && !isSecondRankListPublished)
+    {
+        str = " на първо класиране";
+    }
+    else
+    {
+        if (isSecondRankListPublished && !isThirdRankListPublished)
+        {
+            str = " на второ класиране";
+        }
+        else
+        {
+            if (isThirdRankListPublished)
+            {
+                str = "на трето класиране";
+            }
+        }
+    }
+}
+
+<style>
+    table, th, td {
+        border: 0px solid black;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 15px;
+    }
+</style>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        function SubmitClick() {
+ 
+           
+
+            var answer = confirm("Сигурен ли сте, че искате да се запишете в специалността " + $("#programmes option:selected").text() );
+            if (answer)
+            {
+                $.ajax({
+                            
+                    type: 'post',
+                    url: "/studentrankinginformation/enrollstudent",
+                    data: {
+                                    
+                        programmename: $("#programmes option:selected").text()
+                    },
+                        success: function (result) {
+                            window.location.href = result.Url;
+                        }
+
+                        });
+            }
+            
+
+        };
+
+    </script>
+}
+
+<h2>@ViewData["userName"]</h2>
+
+@if (isFirstRankListPublished || isSecondRankListPublished || isThirdRankListPublished)
+{
+    if (isEnrolled)
+    {
+        <h2>Записан сте във факултет @faculty в специалност @enrolledProgramme</h2>
+        
+    
+    }
+    else
+    {
+        @Html.DropDownList("programmes", ViewData["programmes"] as SelectList, new { @id = "programmes" })
+    
+        
+        <input type="submit" value="Запишете се" onclick="javascript:SubmitClick()" />
+        <h2>Приети сте в следните специалности @str</h2>
+
+        <div id="rankingTable">
+            @Html.Partial("_StudentRankingTable", Model)
+        </div>
+
+    }
+
+}
+else
+{
+    <h2>Класирането все още не е публикувано.</h2>
+}
+
+
+
+@*<div id="rankingTable">
+    <table>
+        <tr>
+            <th>
+                <label>Номер на желание</label>
+            </th>
+            <th>
+                <label>Факултет</label>
+            </th>
+            <th>
+                <label>Специалност</label>
+            </th>
+            <th>
+                <label>Бал</label>
+            </th>
+            <th></th>
+        </tr>
+
+        @if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PrefNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProgrammeName)
+                    </td>
+                    <th>
+                        @Html.DisplayFor(model => item.FacultyName)
+                    </th>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FinalResult)
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+</div>*@
