@@ -13,7 +13,7 @@ namespace StudentRanking.DataAccess
         [Required]
         [Key]
         [Column(Order = 0)]
-        [Index("ProgrammeNameIndex", unique: false)]
+        [StudentRanking.Filters.Index("ProgrammeNameIndex", unique: false)]
         public String ProgrammeName { get; set; }
 
         [Required]

@@ -16,7 +16,7 @@ namespace StudentRanking.Controllers
     {
         //
         // GET: /StudentPreferences/
-        private RankingContext db = new RankingContext();
+        private UsersContext db = new UsersContext();
         private Dictionary<String, List<String>> programmes = new Dictionary<String, List<String>>();
         private List<StudentPreferences> model = new List<StudentPreferences>();
 
@@ -90,7 +90,7 @@ namespace StudentRanking.Controllers
        
             ViewData["faculties"] = faculties;
 
-            RankingContext db = new RankingContext();
+            UsersContext db = new UsersContext();
             QueryManager mng = new QueryManager(db);
 
             DateTime end = Convert.ToDateTime(mng.getCampaignDates().PreferrencesLastDate);
@@ -130,7 +130,7 @@ namespace StudentRanking.Controllers
             ViewData["userName"] = user;
 
 
-            RankingContext db = new RankingContext();
+            UsersContext db = new UsersContext();
             QueryManager mng = new QueryManager(db);
 
             DateTime finale = Convert.ToDateTime(mng.getCampaignDates().PreferrencesLastDate); 

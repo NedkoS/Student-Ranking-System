@@ -13,7 +13,7 @@ namespace StudentRanking.Ranking
     {
         private const String CONST_REJECTED = "rejected";
 
-        private RankingContext context;
+        private UsersContext context;
         private QueryManager queryManager;
 
         struct RankListEntry
@@ -28,7 +28,7 @@ namespace StudentRanking.Ranking
             public double totalGrade;
         }
 
-        public Ranker(RankingContext context)
+        public Ranker(UsersContext context)
         {
             this.context = context;
             queryManager = new QueryManager(context);

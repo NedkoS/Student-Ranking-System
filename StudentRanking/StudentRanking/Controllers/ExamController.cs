@@ -14,7 +14,7 @@ namespace StudentRanking.Controllers
     [Authorize(Roles = "admin")]
     public class ExamController : Controller
     {
-        private RankingContext db = new RankingContext();
+        private UsersContext db = new UsersContext();
 
         //
         // GET: /Exam/

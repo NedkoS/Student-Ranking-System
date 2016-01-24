@@ -11,7 +11,7 @@ namespace StudentRanking.DataAccess
         public List<String> Faculties()
         {
             
-            RankingContext context = new RankingContext();
+            UsersContext context = new UsersContext();
 
             var f = from b in context.Faculties
                     select b.FacultyName;
@@ -22,7 +22,7 @@ namespace StudentRanking.DataAccess
         public List<String> Programmes(String facultyName)
         {
             
-            RankingContext context = new RankingContext();
+            UsersContext context = new UsersContext();
 
             var f = from b in context.Faculties
                     where b.FacultyName == facultyName

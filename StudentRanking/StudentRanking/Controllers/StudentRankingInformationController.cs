@@ -3,6 +3,7 @@ using StudentRanking.Ranking;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -14,7 +15,7 @@ namespace StudentRanking.Models
     {
         //
         // GET: /StudentRankingInformation/
-        private RankingContext db = new RankingContext();
+        private UsersContext db = new UsersContext();
         private Dictionary<String, List<String>> programmes = new Dictionary<String, List<String>>();
         private List<StudentRankingInformation> model = new List<StudentRankingInformation>();
 

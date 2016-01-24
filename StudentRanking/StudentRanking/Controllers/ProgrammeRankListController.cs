@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -14,7 +15,7 @@ namespace StudentRanking.Controllers
     [Authorize(Roles = "admin")]
     public class ProgrammeRankListController : Controller
     {
-        private RankingContext db = new RankingContext();
+        private UsersContext db = new UsersContext();
         private Dictionary<String, List<String>> programmes = new Dictionary<String, List<String>>();
         private List<FacultyRankList> model = new List<FacultyRankList>();
         //
@@ -57,7 +58,7 @@ namespace StudentRanking.Controllers
         public ActionResult Index()
         {
 
-            RankingContext db = new RankingContext();
+            UsersContext db = new UsersContext();
             QueryManager mng = new QueryManager(db);
 
             
@@ -144,7 +145,7 @@ namespace StudentRanking.Controllers
             
             //проверка дали е настъпила дата за обявяване на класиране
 
-            RankingContext db = new RankingContext();
+            UsersContext db = new UsersContext();
             QueryManager mng = new QueryManager(db);
 
             // класиране първи етап - дати

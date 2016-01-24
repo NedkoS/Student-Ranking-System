@@ -9,9 +9,9 @@ namespace StudentRanking.Ranking
 {
     public class QueryManager
     {
-        private RankingContext context;
+        private UsersContext context;
 
-        public QueryManager(RankingContext context)
+        public QueryManager(UsersContext context)
         {
             this.context = context;
         }

@@ -45,7 +45,7 @@ namespace StudentRanking.Controllers
             if ( ModelState.IsValid && WebSecurity.Login(model.UserName, model.Password, persistCookie: model.RememberMe)
                  && model.UserName == "Admin" )
             {
-                RankingContext db = new RankingContext();
+                UsersContext db = new UsersContext();
 
                 if (db.Dates.ToList().Count() == 0)
                 {
@@ -72,7 +72,7 @@ namespace StudentRanking.Controllers
 
             if (ModelState.IsValid && WebSecurity.Login(model.UserName, model.Password, persistCookie: model.RememberMe))
             {
-                RankingContext db = new RankingContext();
+                UsersContext db = new UsersContext();
                 QueryManager mng = new QueryManager(db);
                 DateTime end = Convert.ToDateTime(mng.getCampaignDates().FirstRankingDate);
                 if (DateTime.Today > end)

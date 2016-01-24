@@ -12,7 +12,7 @@ namespace StudentRanking.Controllers
     [Authorize(Roles = "admin")]
     public class CampaignRankingDatesController : Controller
     {
-        private RankingContext db = new RankingContext();
+        private UsersContext db = new UsersContext();
         //
         // GET: /RankingDates/
 

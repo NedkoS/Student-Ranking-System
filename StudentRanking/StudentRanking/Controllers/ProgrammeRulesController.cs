@@ -13,7 +13,7 @@ namespace StudentRanking.Controllers
     [Authorize(Roles = "admin")]
     public class ProgrammeRulesController : Controller
     {
-        private RankingContext db = new RankingContext();
+        private UsersContext db = new UsersContext();
         private List<ProgrammeProperties> model = new List<ProgrammeProperties>();
         private Dictionary<String, List<String>> programmes = new Dictionary<String, List<String>>();
 

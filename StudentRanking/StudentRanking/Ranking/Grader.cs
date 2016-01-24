@@ -13,11 +13,11 @@ namespace StudentRanking.Ranking
         private const String DIPLOMA = "диплома";
         private const double MINIMAL_ALLOWED_GRADE = 3;
 
-        private RankingContext context;
+        private UsersContext context;
         private QueryManager queryManager;
         private Dictionary<string, double> grades;
 
-        public Grader(RankingContext context)
+        public Grader(UsersContext context)
         {
             this.context = context;
             queryManager = new QueryManager(context);
