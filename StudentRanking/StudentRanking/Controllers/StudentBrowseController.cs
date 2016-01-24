@@ -223,6 +223,7 @@ namespace StudentRanking.Controllers
                 return HttpNotFound();
             }
 
+            Roles.RemoveUserFromRole(student.EGN, "student");
             Membership.DeleteUser(student.EGN);
 
             return View(student);
