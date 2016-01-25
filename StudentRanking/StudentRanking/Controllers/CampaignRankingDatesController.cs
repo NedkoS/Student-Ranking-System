@@ -18,6 +18,7 @@ namespace StudentRanking.Controllers
 
         public ActionResult Index()
         {
+            ViewBag.time = 0;
             return View();
         }
 
@@ -66,7 +67,7 @@ namespace StudentRanking.Controllers
 
             db.Dates.Add(d);
             db.SaveChanges();
-
+         
             return RedirectToAction("Menu", "Admin");  
         }
     }
