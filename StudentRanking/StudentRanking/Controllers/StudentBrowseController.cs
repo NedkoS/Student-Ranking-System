@@ -117,56 +117,23 @@ namespace StudentRanking.Controllers
 
                 String pass = ViewBag.Password;
                 WebSecurity.CreateUserAndAccount(student.EGN, ViewBag.Password);
-                //WebSecurity.Login(student.EGN, ViewBag.Password);
 
-                //var body = "<p>Email From: {0} ({1})</p><p>Message:</p><p>{2}</p>";
-                //var message = new MailMessage();
-                //message.To.Add(new MailAddress("evgenistefchov@abv.bg")); //replace with valid value
-                //message.From = new MailAddress("flood1@abv.bg");
-                //message.Subject = "Your email subject";
-                //message.Body = string.Format(body, "admin",
-                //                                   "flood1@abv.bg", newPassword);
-                //message.IsBodyHtml = true;
-                //var smtp = new SmtpClient();
-
-                //var credential = new NetworkCredential
-                //{
-                //    UserName = "flood1@abv.bg",  // replace with valid value
-                //    Password = "123456789"  // replace with valid value
-                //};
-                //smtp.Credentials = credential;
-                //smtp.Host = "smtp.abv.bg";
-                //smtp.Port = 587;
-                //smtp.EnableSsl = true;
-
-                ////smtp.SendMailAsync(message);
-                //smtp.Send(message);
-//this
-                //var body = "<p>Email From: {0} ({1})</p><p>Message:</p><p>{2}</p>";
-                //MailMessage mail = new MailMessage();
-                //mail.To.Add(new MailAddress("evgenistefchov@abv.bg"));
-                //mail.From = new MailAddress("flood1@abv.bg");
-                //mail.Subject = "Your email subject";
-                //mail.Body = string.Format(body, "admin",
-                //                                   "flood1@abv.bg", newPassword); ;
-                //mail.IsBodyHtml = true;
-                //SmtpClient smtp = new SmtpClient("smtp.abv.bg", 587);
-                //smtp.EnableSsl = true;
-                //smtp.UseDefaultCredentials = false;
-                //smtp.Credentials =
-                //     new System.Net.NetworkCredential("flood1@abv.bg", "123456789");
-                //smtp.Send(mail);
-
-
-
-                //using (var smtp = new SmtpClient())
-                //{
-                //    await smtp.SendMailAsync(message);
-                //    //return RedirectToAction("Sent");
-                //}
+                var body = "<p>Email From: {0} ({1})</p><p>Message:</p><p>{2}</p>";
+                MailMessage mail = new MailMessage();
+                mail.To.Add(new MailAddress(student.Email));
+                mail.From = new MailAddress("mailsender39@gmail.com");
+                mail.Subject = "Your email subject";
+                mail.Body = string.Format(body, "admin",
+                                                   "mailsender39@gmail.com", newPassword); ;
+                mail.IsBodyHtml = true;
+                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+                smtp.EnableSsl = true;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials =
+                     new System.Net.NetworkCredential("mailsender39@gmail.com", "stefito15");
+                smtp.Send(mail);
 
                 MembershipUser user = Membership.GetUser(student.EGN);
-                //user.GetPassword();
 
                 var roles = (SimpleRoleProvider)Roles.Provider;
 

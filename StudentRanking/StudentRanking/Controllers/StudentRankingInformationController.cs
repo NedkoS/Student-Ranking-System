@@ -88,7 +88,7 @@ namespace StudentRanking.Models
 
             // класиране първи етап - дати
             ViewData["isFirstRankListPublished"] = false;
-            if (db.Dates.ToList().Last().FirstRankingDate == "true")
+            if (db.Dates.ToList().Count != 0 &&  db.Dates.ToList().Last().FirstRankingDate == "true")
             {
                 ViewData["isFirstRankListPublished"] = true;
             }
@@ -96,14 +96,14 @@ namespace StudentRanking.Models
 
             // класиране втори етап - дати
             ViewData["isSecondRankListPublished"] = false;
-            if (db.Dates.ToList().Last().FirstRankingDate == "true")
+            if (db.Dates.ToList().Count != 0 &&  db.Dates.ToList().Last().FirstRankingDate == "true")
             {
                 ViewData["isSecondRankListPublished"] = true;
             }
 
             // класиране трети етап - дати
             ViewData["isThirdRankListPublished"] = false;
-            if (db.Dates.ToList().Last().FirstRankingDate == "true")
+            if (db.Dates.ToList().Count != 0 &&  db.Dates.ToList().Last().FirstRankingDate == "true")
             {
                 ViewData["isThirdRankListPublished"] = true;
             }

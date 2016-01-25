@@ -77,7 +77,7 @@ namespace StudentRanking.Controllers
             }
 
             ViewData["isFirstRankListPublished"] = false;
-            if (db.Dates.ToList().Last().FirstRankingDate == "true")
+            if (db.Dates.ToList().Count != 0 && db.Dates.ToList().Last().FirstRankingDate == "true")
             {
                 ViewData["isFirstRankListPublished"] = true;
             }
@@ -92,7 +92,7 @@ namespace StudentRanking.Controllers
             }
 
             ViewData["isSecondRankListPublished"] = false;
-            if (db.Dates.ToList().Last().FirstRankingDate == "true")
+            if (db.Dates.ToList().Count != 0 && db.Dates.ToList().Last().FirstRankingDate == "true")
             {
                 ViewData["isSecondRankListPublished"] = true;
             }
@@ -106,7 +106,7 @@ namespace StudentRanking.Controllers
             }
 
             ViewData["isThirdRankListPublished"] = false;
-            if (db.Dates.ToList().Last().FirstRankingDate == "true")
+            if (db.Dates.ToList().Count != 0 &&  db.Dates.ToList().Last().FirstRankingDate == "true")
             {
                 ViewData["isThirdRankListPublished"] = true;
             }
@@ -157,7 +157,7 @@ namespace StudentRanking.Controllers
             }
 
             ViewData["isFirstRankListPublished"] = false;
-            if (db.Dates.ToList().Last().FirstRankingDate == "true")
+            if (db.Dates.ToList().Count != 0 && db.Dates.ToList().Last().FirstRankingDate == "true")
             {
                 ViewData["isFirstRankListPublished"] = true;
             }
@@ -172,7 +172,7 @@ namespace StudentRanking.Controllers
             }
 
             ViewData["isSecondRankListPublished"] = false;
-            if (db.Dates.ToList().Last().FirstRankingDate == "true")
+            if (db.Dates.ToList().Count != 0 &&  db.Dates.ToList().Last().FirstRankingDate == "true")
             {
                 ViewData["isSecondRankListPublished"] = true;
             }
@@ -186,7 +186,7 @@ namespace StudentRanking.Controllers
             }
 
             ViewData["isThirdRankListPublished"] = false;
-            if (db.Dates.ToList().Last().FirstRankingDate == "true")
+            if (db.Dates.ToList().Count != 0 && db.Dates.ToList().Last().FirstRankingDate == "true")
             {
                 ViewData["isThirdRankListPublished"] = true;
             }
