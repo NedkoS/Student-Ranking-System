@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace StudentRanking.Ranking
@@ -164,7 +165,20 @@ namespace StudentRanking.Ranking
             match(facultyName, preferences, student);
         }
 
-        public void start()
+        public delegate void OnFinishListener();
+        private OnFinishListener onFinishListener;
+
+        public void setOnFinishListener(OnFinishListener onFinish)
+        {
+            onFinishListener += onFinish;
+        }
+
+        //public async Task start()
+        //{
+        //    await Task.Run(new Action(startRanker));
+        //}
+
+        public async Task start()
         {
             List<Student> students = new List<Student>();
 
@@ -236,6 +250,8 @@ namespace StudentRanking.Ranking
                 }
                 while (count > 0);
             }
+
+            onFinishListener();
         }
 
     }

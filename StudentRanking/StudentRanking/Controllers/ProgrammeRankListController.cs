@@ -7,6 +7,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -232,13 +233,18 @@ namespace StudentRanking.Controllers
             return PartialView("_ProgrammeRankListTable", model);
         }
 
+        public void onAlgoFinished()
+        {
+            int a = 2;
+        }
 
         [HttpPost]
-        public ActionResult algoStart()
+        public async Task<ActionResult> algoStart()
         {
             //Algo start
             Ranker ranker = new Ranker(db);
-            ranker.start();
+            ranker.setOnFinishListener(onAlgoFinished);
+            await ranker.start();
 
             RankingDates dates = db.Dates.ToList().Last();
 
