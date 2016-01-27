@@ -244,7 +244,7 @@ namespace StudentRanking.Controllers
             //Algo start
             Ranker ranker = new Ranker(db);
             ranker.setOnFinishListener(onAlgoFinished);
-            await ranker.start();
+            
 
             RankingDates dates = db.Dates.ToList().Last();
 
@@ -274,6 +274,8 @@ namespace StudentRanking.Controllers
                 }
 
             }
+
+            await ranker.start();
             
 
             //return RedirectToAction("Index", "StudentRankingInformation");
