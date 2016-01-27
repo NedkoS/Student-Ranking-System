@@ -44,7 +44,7 @@ namespace StudentRanking.Models
                 isEnrolled = st.IsEnrolled;
             }
 
-            QueryManager manager = new QueryManager(db);
+            QueryManager manager = QueryManager.getInstance();
             List<FacultyRankList> rankList = manager.getStudentRankList(user);
 
             ViewData["enrolledProgramme"] = "";
@@ -64,7 +64,7 @@ namespace StudentRanking.Models
 
             ViewData["isEnrolled"] = false;
 
-            QueryManager queryManager = new QueryManager(db);
+            QueryManager queryManager = QueryManager.getInstance();
 
             List<FacultyRankList> studentRankList = queryManager.getStudentRankList(user);
 
@@ -84,7 +84,7 @@ namespace StudentRanking.Models
 
 
 
-            QueryManager mng = new QueryManager(db);
+            QueryManager mng = QueryManager.getInstance();
 
             // класиране първи етап - дати
             ViewData["isFirstRankListPublished"] = false;
@@ -154,7 +154,7 @@ namespace StudentRanking.Models
             db.SaveChanges();
             ViewData["isEnrolled"] = true;
 
-            QueryManager manager = new QueryManager(db);
+            QueryManager manager = QueryManager.getInstance();
             List<FacultyRankList> rankList = manager.getStudentRankList(user);
 
             foreach (var item in rankList)

@@ -15,9 +15,9 @@ namespace StudentRanking.Ranking
       
         private QueryManager queryManager;
 
-        public Ranker(UsersContext context)
+        public Ranker()
         {
-            queryManager = new QueryManager(context);
+            queryManager = QueryManager.getInstance();
         }
 
         private void match(String facultyName, List<Preference> preferences, Student student)

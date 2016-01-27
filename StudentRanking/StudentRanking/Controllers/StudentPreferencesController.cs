@@ -90,8 +90,7 @@ namespace StudentRanking.Controllers
        
             ViewData["faculties"] = faculties;
 
-            UsersContext db = new UsersContext();
-            QueryManager mng = new QueryManager(db);
+            QueryManager mng = QueryManager.getInstance();
 
             DateTime end = Convert.ToDateTime(mng.getCampaignDates().PreferrencesLastDate);
             ViewData["isAddingPreferencesEnd"] = false;
@@ -102,7 +101,7 @@ namespace StudentRanking.Controllers
 
 
 
-            QueryManager queryManager = new QueryManager(db);
+            QueryManager queryManager = QueryManager.getInstance();
 
             List<Preference> studentPreferences = queryManager.getStudentPreferences(user);
 
@@ -129,9 +128,7 @@ namespace StudentRanking.Controllers
             String user = User.Identity.Name;
             ViewData["userName"] = user;
 
-
-            UsersContext db = new UsersContext();
-            QueryManager mng = new QueryManager(db);
+            QueryManager mng = QueryManager.getInstance();
 
             DateTime finale = Convert.ToDateTime(mng.getCampaignDates().PreferrencesLastDate); 
             
@@ -158,7 +155,7 @@ namespace StudentRanking.Controllers
             //                                         .OrderByDescending(t => t.PrefNumber)
             //                                         .FirstOrDefault().PrefNumber;
 
-            QueryManager queryManager = new QueryManager(db);
+            QueryManager queryManager = QueryManager.getInstance();
 
             List<Preference> studentPreferences = queryManager.getStudentPreferences(egn);
 
@@ -210,7 +207,7 @@ namespace StudentRanking.Controllers
 
         public ActionResult deleteLastPreference()
         {
-            QueryManager queryManager = new QueryManager(db);
+            QueryManager queryManager = QueryManager.getInstance();
 
             List<Preference> studentPreferences = queryManager.getStudentPreferences(User.Identity.Name);
             if (studentPreferences.Count() > 0 )

@@ -59,9 +59,7 @@ namespace StudentRanking.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-
-            UsersContext db = new UsersContext();
-            QueryManager mng = new QueryManager(db);
+            QueryManager mng = QueryManager.getInstance();
 
             
 
@@ -147,8 +145,7 @@ namespace StudentRanking.Controllers
             
             //проверка дали е настъпила дата за обявяване на класиране
 
-            UsersContext db = new UsersContext();
-            QueryManager mng = new QueryManager(db);
+            QueryManager mng = QueryManager.getInstance();
 
             // класиране първи етап - дати
             DateTime first = Convert.ToDateTime(mng.getCampaignDates().FirstRankingDate);
@@ -206,7 +203,7 @@ namespace StudentRanking.Controllers
                 ViewData["mainAdmin"] = true;
             }
 
-            QueryManager queryManager = new QueryManager(db);
+            QueryManager queryManager = QueryManager.getInstance();
 
             List<FacultyRankList> rankList = queryManager.getRankList(programmeName);
 
@@ -243,7 +240,7 @@ namespace StudentRanking.Controllers
         public async Task<ActionResult> algoStart()
         {
             //Algo start
-            Ranker ranker = new Ranker(db);
+            Ranker ranker = new Ranker();
             ranker.setOnFinishListener(onAlgoFinished);
             ViewBag.isReady = false;
 

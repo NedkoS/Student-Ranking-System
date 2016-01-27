@@ -1,4 +1,6 @@
 ﻿using StudentRanking.App_Start;
+using StudentRanking.DataAccess;
+using StudentRanking.Ranking;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -31,6 +33,8 @@ namespace StudentRanking
             // WebSecurity.InitializeDatabaseConnection("DefaultConnection", "UserProfile", "UserId", "UserName", true); 
 
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("en-US");
+
+            QueryManager.getInstance().setUsersContext(new UsersContext());
         }
     }
 }

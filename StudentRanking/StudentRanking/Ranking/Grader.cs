@@ -16,9 +16,9 @@ namespace StudentRanking.Ranking
         private QueryManager queryManager;
         private Dictionary<string, double> grades;
 
-        public Grader(QueryManager queryManager)
+        public Grader()
         {
-            this.queryManager = queryManager;
+            this.queryManager = QueryManager.getInstance();
         }
 
         private List<String> getMatricularityExams(List<List<String>> formulas)

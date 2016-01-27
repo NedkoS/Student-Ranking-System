@@ -72,8 +72,7 @@ namespace StudentRanking.Controllers
 
             if (ModelState.IsValid && WebSecurity.Login(model.UserName, model.Password, persistCookie: model.RememberMe))
             {
-                UsersContext db = new UsersContext();
-                QueryManager mng = new QueryManager(db);
+                QueryManager mng = QueryManager.getInstance();
                 DateTime end = Convert.ToDateTime(mng.getCampaignDates().FirstRankingDate);
                 if (DateTime.Today > end)
                 {

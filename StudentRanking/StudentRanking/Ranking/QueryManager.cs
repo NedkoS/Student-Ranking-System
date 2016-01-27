@@ -11,10 +11,21 @@ namespace StudentRanking.Ranking
     {
         public const String CONST_REJECTED = "rejected";
         private UsersContext context;
+        private static QueryManager queryManager = new QueryManager();
 
-        public QueryManager(UsersContext context)
+        private QueryManager()
+        {
+            
+        }
+
+        public void setUsersContext(UsersContext context)
         {
             this.context = context;
+        }
+
+        public static QueryManager getInstance()
+        {
+            return queryManager;
         }
 
         public void deleteRankingData()
