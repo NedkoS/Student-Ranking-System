@@ -12,44 +12,12 @@ namespace StudentRanking.Ranking
 {
     public class Ranker
     {
-        private const String CONST_REJECTED = "rejected";
-
-        private UsersContext context;
+      
         private QueryManager queryManager;
-
-        struct RankListEntry
-        {
-            public RankListEntry(String studentEGN, double totalGrade)
-            {
-                this.studentEGN = studentEGN;
-                this.totalGrade = totalGrade;
-            }
-
-            public String studentEGN;
-            public double totalGrade;
-        }
 
         public Ranker(UsersContext context)
         {
-            this.context = context;
             queryManager = new QueryManager(context);
-        }
-
-        //Returns a list of student SSNs currently in a Programme by Programme
-        private List<RankListEntry> getProgrammeStudents(String ProgrammeName)
-        {
-            List<RankListEntry> students = new List<RankListEntry>();
-
-            var query = from student in context.FacultyRankLists
-                        where student.ProgrammeName == ProgrammeName
-                        select student;
-
-            foreach (var student in query)
-            {
-                students.Add(new RankListEntry(student.EGN, student.TotalGrade));
-            }
-
-            return students;
         }
 
         private void match(String facultyName, List<Preference> preferences, Student student)
@@ -58,18 +26,26 @@ namespace StudentRanking.Ranking
             FacultyRankList rejected = new FacultyRankList()
             {
                 EGN = student.EGN,
-                ProgrammeName = CONST_REJECTED + ' ' + facultyName,
+                ProgrammeName = QueryManager.CONST_REJECTED + ' ' + facultyName,
                 TotalGrade = 0
             };
 
-            context.FacultyRankLists.Add(rejected);
-            context.SaveChanges();
+            lock (queryManager)
+            {
+                queryManager.addFacultyRankListItem(rejected);
+            }
             try
             {
             foreach (Preference preference in preferences)
             {
-                int quota = queryManager.getQuota(preference.ProgrammeName, (bool)student.Gender);
-                List<FacultyRankList> rankList = queryManager.getRankListData(preference.ProgrammeName, (bool)student.Gender);
+                int quota;
+                List<FacultyRankList> rankList;
+
+                lock (queryManager)
+                {
+                    quota = queryManager.getQuota(preference.ProgrammeName, (bool)student.Gender);
+                    rankList = queryManager.getRankListData(preference.ProgrammeName, (bool)student.Gender);
+                }
                 double minimalGrade = 0;
                 double studentCount = rankList.Count;
 
@@ -90,13 +66,10 @@ namespace StudentRanking.Ranking
 
                     var entries = rankList.Where(entry => entry.TotalGrade == minimalGrade);
 
-                    foreach (FacultyRankList entry in entries)
+                    lock (queryManager)
                     {
-                        context.FacultyRankLists.Attach(entry);
-                        context.FacultyRankLists.Remove(entry);
-
+                        queryManager.removeFacultyRankListItems(entries);
                     }
-                    context.SaveChanges();
                 }
 
                 if ((preference.TotalGrade > 0 &&
@@ -111,11 +84,11 @@ namespace StudentRanking.Ranking
                             TotalGrade = preference.TotalGrade
                         };
 
-                    context.FacultyRankLists.Add(entry);
-                    context.FacultyRankLists.Attach(rejected);
-                    context.FacultyRankLists.Remove(rejected);
-                    context.SaveChanges();
-
+                    lock (queryManager)
+                    {
+                        queryManager.addFacultyRankListItem(entry);
+                        queryManager.removeFacultyRankListItem(rejected);
+                    }
                     break;
                 }
 
@@ -123,9 +96,10 @@ namespace StudentRanking.Ranking
             }
             catch (Exception e)
             {
-                context.FacultyRankLists.Attach(rejected);
-                context.FacultyRankLists.Remove(rejected);
-                context.SaveChanges();
+                lock (queryManager)
+                {
+                    queryManager.removeFacultyRankListItem(rejected);
+                }
                 throw e;
             }
         }
@@ -155,10 +129,14 @@ namespace StudentRanking.Ranking
         private void serve(String facultyName, Student student)
         {
             //handle preferences
-            List<Preference> preferences = queryManager.getStudentPreferencesByFaculty(student.EGN, facultyName);
+            List<Preference> preferences;
+            lock(queryManager)
+            {
+                preferences = queryManager.getStudentPreferencesByFaculty(student.EGN, facultyName);
+            }
 
             //handle grading
-            Grader grader = new Grader(context);
+            Grader grader = new Grader(queryManager);
             grader.grade(student.EGN, preferences);
 
             //handle ranking
@@ -182,77 +160,69 @@ namespace StudentRanking.Ranking
         {
             List<Student> students = new List<Student>();
 
-            var getFacultyNames = (from faculty in context.Faculties
-                                   select faculty.FacultyName).Distinct();
-
-            List<String> facultyNames = getFacultyNames.ToList();
-            List<String> studentEGNs;
+            List<String> facultyNames = queryManager.getFacultyNames();
+            
 
             //if we try to rate for a second time we should clear the rejected students and
             //those who did not enroll
 
-            var entriesToDelete = from student in context.Students
-                                  from entry in context.FacultyRankLists
-                                  where entry.EGN == student.EGN
-                                  where student.IsEnrolled == false || (entry.ProgrammeName.StartsWith(CONST_REJECTED + " "))
-                                  select entry;
 
-            foreach (FacultyRankList entry in entriesToDelete)
-            {
-                context.FacultyRankLists.Attach(entry);
-                context.FacultyRankLists.Remove(entry);
-            }
-            context.SaveChanges();
-
+            queryManager.deleteRankingData();
+            List<Task> tasks = new List<Task>();
             //iterate through every faculty
             foreach (String facultyName in facultyNames)
             {
-                var getStudentsEGNQuery = (from student in context.Students
-                                           from preference in context.Preferences
-                                           from faculty in context.Faculties
-                                           where student.IsEnrolled == false
-                                           where faculty.FacultyName == facultyName &&
-                                                preference.ProgrammeName == faculty.ProgrammeName &&
-                                                preference.EGN == student.EGN
-                                           select student.EGN).Distinct();
+                Task facultyTask = Task.Run(() => rankFaculty(facultyName));
+                tasks.Add(facultyTask);
+            }
 
-                var getApprovedStudentsEGNQuery = (from entry in context.FacultyRankLists
-                                                   from faculty in context.Faculties
-                                                   where faculty.FacultyName == facultyName
-                                                   where entry.ProgrammeName == faculty.ProgrammeName || (entry.ProgrammeName.Equals(CONST_REJECTED + " " + faculty.FacultyName))
-                                                   select entry.EGN).Distinct();
-
-                int count;
-                studentEGNs = getStudentsEGNQuery.ToList();
-
-                //this while cycle is used to match any remaining students rejected
-                //in previous iterations
-                do
-                {
-                    count = 0;
-                    //iterate through every student with a preference in this faculty
-                    foreach (String EGN in studentEGNs)
-                    {
-                        Student student;
-                        student = queryManager.getStudent(EGN);
-
-                        //TODO: This row is for debugging only
-                        List<String> lst = getApprovedStudentsEGNQuery.ToList();
-
-                        //if the student is already approved for a programme, skip him/her
-                        if (!getApprovedStudentsEGNQuery.Contains(EGN))
-                        {
-                            serve(facultyName, student);
-                            count++;
-                        }
-                    }
-
-                }
-                while (count > 0);
+            foreach(Task task in tasks)
+            {
+                await task;
             }
 
             onFinishListener();
         }
 
+
+        private void rankFaculty(String facultyName)
+        {
+
+            List<String> studentEGNs;
+            int count;
+
+            lock (queryManager)
+            {
+                studentEGNs = queryManager.getStudentEGNs(facultyName);
+            }
+            //this while cycle is used to match any remaining students rejected
+            //in previous iterations
+            do
+            {
+                count = 0;
+                //iterate through every student with a preference in this faculty
+                foreach (String EGN in studentEGNs)
+                {
+                    Student student;
+                    bool isApproved;
+
+                    lock (queryManager)
+                    {
+                        student = queryManager.getStudent(EGN);
+                        isApproved = queryManager.getApprovedStudentsEGNs(facultyName).Contains(EGN);
+                    }
+
+                    //if the student is already approved for a programme, skip him/her
+                    if (!isApproved)
+                    {
+                        serve(facultyName, student);
+                        count++;
+                    }
+                }
+
+            }
+            while (count > 0);
+            
+        }
     }
 }

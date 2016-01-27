@@ -7,6 +7,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -275,7 +276,8 @@ namespace StudentRanking.Controllers
 
             }
 
-            ranker.start();
+            await ranker.start();
+            //ThreadPool.QueueUserWorkItem(o => ranker.start()); 
             
 
             //return RedirectToAction("Index", "StudentRankingInformation");

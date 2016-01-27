@@ -9,11 +9,29 @@ namespace StudentRanking.Ranking
 {
     public class QueryManager
     {
+        public const String CONST_REJECTED = "rejected";
         private UsersContext context;
 
         public QueryManager(UsersContext context)
         {
             this.context = context;
+        }
+
+        public void deleteRankingData()
+        {
+            var entriesToDelete = from student in context.Students
+                                  from entry in context.FacultyRankLists
+                                  where entry.EGN == student.EGN
+                                  where student.IsEnrolled == false || (entry.ProgrammeName.StartsWith(QueryManager.CONST_REJECTED + " "))
+                                  select entry;
+
+            foreach (FacultyRankList entry in entriesToDelete)
+            {
+                context.FacultyRankLists.Attach(entry);
+                context.FacultyRankLists.Remove(entry);
+            }
+
+            context.SaveChanges();
         }
 
         //Returns a list of preferences of a student by SSN
@@ -30,6 +48,31 @@ namespace StudentRanking.Ranking
             return preferences;
         }
 
+        public List<String> getApprovedStudentsEGNs(String facultyName)
+        {
+            var getApprovedStudentsEGNQuery = (from entry in context.FacultyRankLists
+                                               from faculty in context.Faculties
+                                               where faculty.FacultyName == facultyName
+                                               where entry.ProgrammeName == faculty.ProgrammeName || (entry.ProgrammeName.Equals(CONST_REJECTED + " " + faculty.FacultyName))
+                                               select entry.EGN).Distinct();
+
+            return getApprovedStudentsEGNQuery.ToList();
+        }
+
+        public List<String> getStudentEGNs(String facultyName)
+        {
+            var getStudentsEGNQuery = (from student in context.Students
+                                       from preference in context.Preferences
+                                       from faculty in context.Faculties
+                                       where student.IsEnrolled == false
+                                       where faculty.FacultyName == facultyName &&
+                                            preference.ProgrammeName == faculty.ProgrammeName &&
+                                            preference.EGN == student.EGN
+                                       select student.EGN).Distinct();
+
+            return getStudentsEGNQuery.ToList();
+        }
+
         //Returns a list of preferences of a student by SSN
         public List<Preference> getStudentPreferencesByFaculty(String EGN, String facultyName)
         {
@@ -44,6 +87,31 @@ namespace StudentRanking.Ranking
             preferences = query.ToList();
 
             return preferences;
+        }
+
+        public List<String> getFacultyNames()
+        {
+            var getFacultyNames = (from faculty in context.Faculties
+                                   select faculty.FacultyName).Distinct();
+
+            return getFacultyNames.ToList();
+        }
+
+        public void removeFacultyRankListItem(FacultyRankList item)
+        {
+            context.FacultyRankLists.Attach(item);
+            context.FacultyRankLists.Remove(item);
+            context.SaveChanges();
+        }
+
+        public void removeFacultyRankListItems(IEnumerable<FacultyRankList> entries)
+        {
+            foreach (FacultyRankList entry in entries)
+            {
+                context.FacultyRankLists.Attach(entry);
+                context.FacultyRankLists.Remove(entry);
+            }
+            context.SaveChanges();
         }
 
         //get faculty by a programme name
@@ -143,6 +211,18 @@ namespace StudentRanking.Ranking
             return grades;
         }
 
+        public void addPreference(Preference preference)
+        {
+            context.Preferences.Attach(preference);
+            context.Entry(preference).Property(x => x.TotalGrade).IsModified = true;
+            context.SaveChanges();
+        }
+
+        public void addFacultyRankListItem(FacultyRankList item)
+        {
+            context.FacultyRankLists.Add(item);
+            context.SaveChanges();
+        }
         public Student getStudent(String EGN)
         {
             return context.Students.Where(student => student.EGN == EGN).First();
@@ -210,9 +290,6 @@ namespace StudentRanking.Ranking
             }
 
             return new RankingDates();
-
-            
-
         }
     }
 }

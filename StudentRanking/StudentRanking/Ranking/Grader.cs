@@ -13,14 +13,12 @@ namespace StudentRanking.Ranking
         private const String DIPLOMA = "диплома";
         private const double MINIMAL_ALLOWED_GRADE = 3;
 
-        private UsersContext context;
         private QueryManager queryManager;
         private Dictionary<string, double> grades;
 
-        public Grader(UsersContext context)
+        public Grader(QueryManager queryManager)
         {
-            this.context = context;
-            queryManager = new QueryManager(context);
+            this.queryManager = queryManager;
         }
 
         private List<String> getMatricularityExams(List<List<String>> formulas)
@@ -63,7 +61,11 @@ namespace StudentRanking.Ranking
             Double value;
             //TODO: return formulas applicable for this student
 
-            List<List<String>> formulas = queryManager.getFormulasComponents(programmeName);
+            List<List<String>> formulas;
+            lock(queryManager)
+            {
+                formulas = queryManager.getFormulasComponents(programmeName);
+            }
             double totalGrade = 0;
             double maxGrade = 0;
 
@@ -113,18 +115,21 @@ namespace StudentRanking.Ranking
 
         public void grade(String studentEGN, List<Preference> preferences)
         {
-            grades = queryManager.getStudentGrades(studentEGN);
+            lock (queryManager)
+            {
+                grades = queryManager.getStudentGrades(studentEGN);
+            }
 
             //TODO: Should we check for exams with the same name but different date?
 
             foreach (Preference preference in preferences)
             {
                 preference.TotalGrade = calculateTotalGrade(studentEGN, preference.ProgrammeName);
-
-                //add total grade in preference table
-                context.Preferences.Attach(preference);
-                context.Entry(preference).Property(x => x.TotalGrade).IsModified = true;
-                context.SaveChanges();
+                lock(queryManager)
+                {
+                    //add total grade in preference table
+                    queryManager.addPreference(preference);
+                }
             }
         }
     }
