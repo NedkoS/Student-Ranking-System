@@ -235,7 +235,7 @@ namespace StudentRanking.Controllers
 
         public void onAlgoFinished()
         {
-            int a = 2;
+            ViewBag.isReady = true;
         }
 
         [HttpPost]
@@ -244,7 +244,7 @@ namespace StudentRanking.Controllers
             //Algo start
             Ranker ranker = new Ranker(db);
             ranker.setOnFinishListener(onAlgoFinished);
-            
+            ViewBag.isReady = false;
 
             RankingDates dates = db.Dates.ToList().Last();
 
