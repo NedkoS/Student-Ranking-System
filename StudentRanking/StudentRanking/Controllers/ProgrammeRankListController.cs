@@ -275,7 +275,7 @@ namespace StudentRanking.Controllers
 
             }
 
-            await ranker.start();
+            ranker.start();
             
 
             //return RedirectToAction("Index", "StudentRankingInformation");
