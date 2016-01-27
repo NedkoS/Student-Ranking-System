@@ -136,7 +136,7 @@ namespace StudentRanking.Ranking
             }
 
             //handle grading
-            Grader grader = new Grader(queryManager);
+            Grader grader = new Grader();
             grader.grade(student.EGN, preferences);
 
             //handle ranking
