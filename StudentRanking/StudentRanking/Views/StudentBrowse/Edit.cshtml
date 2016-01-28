@@ -33,8 +33,7 @@
             <label>ЕГН</label>
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.EGN)
-            @Html.ValidationMessageFor(model => model.EGN)
+            @Html.TextBoxFor(model => model.EGN, new { @readonly = "readonly" })
         </div>
 
         @Html.HiddenFor(model => model.EGN)
