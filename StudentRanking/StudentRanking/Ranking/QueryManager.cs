@@ -17,7 +17,7 @@ namespace StudentRanking.Ranking
 
         private QueryManager()
         {
-            
+            context = new UsersContext();
         }
 
         private void lockManager()
@@ -28,6 +28,7 @@ namespace StudentRanking.Ranking
         private void unlockManager()
         {
             Monitor.Exit(this);
+            refresh();
         }
 
         public void setContext(UsersContext context)
@@ -602,9 +603,10 @@ namespace StudentRanking.Ranking
         //    return result;
         //}
 
-        public void Dispose()
+        public void refresh()
         {
-            //context.Dispose();
+            context.Dispose();
+            context = new UsersContext();
         }
 
     }
