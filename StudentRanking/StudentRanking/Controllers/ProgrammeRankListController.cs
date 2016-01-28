@@ -61,9 +61,9 @@ namespace StudentRanking.Controllers
         {
             QueryManager mng = QueryManager.getInstance();
 
-            
-
-
+            //ViewBag.isFirstRankingReady = mng.isRankingReady("first");
+            //ViewBag.isSecondRankingReady = mng.isRankingReady("second");
+            //ViewBag.isThirdRankingReady = mng.isRankingReady("third");
 
             String user = User.Identity.Name;
 
@@ -92,7 +92,10 @@ namespace StudentRanking.Controllers
             }
 
             ViewData["isSecondRankListPublished"] = false;
-            if (queryManager.getRankingDatesContent().Count != 0 && queryManager.getRankingDatesContent().Last().FirstRankingDate == "true")
+            if (queryManager.getRankingDatesContent().Count != 0 
+                && queryManager.getRankingDatesContent().Last().FirstRankingDate == "true" 
+                && queryManager.getRankingDatesContent().Last().SecondRankingDate == "true" 
+               )
             {
                 ViewData["isSecondRankListPublished"] = true;
             }
@@ -106,7 +109,10 @@ namespace StudentRanking.Controllers
             }
 
             ViewData["isThirdRankListPublished"] = false;
-            if (queryManager.getRankingDatesContent().Count != 0 && queryManager.getRankingDatesContent().Last().FirstRankingDate == "true")
+            if (queryManager.getRankingDatesContent().Count != 0
+                && queryManager.getRankingDatesContent().Last().FirstRankingDate == "true"
+                && queryManager.getRankingDatesContent().Last().SecondRankingDate == "true"
+                && queryManager.getRankingDatesContent().Last().ThirdRankingDate == "true")
             {
                 ViewData["isThirdRankListPublished"] = true;
             }
@@ -170,7 +176,8 @@ namespace StudentRanking.Controllers
             }
 
             ViewData["isSecondRankListPublished"] = false;
-            if (queryManager.getRankingDatesContent().Count != 0 && queryManager.getRankingDatesContent().Last().FirstRankingDate == "true")
+            if (queryManager.getRankingDatesContent().Count != 0 
+                && queryManager.getRankingDatesContent().Last().FirstRankingDate == "true")
             {
                 ViewData["isSecondRankListPublished"] = true;
             }
@@ -184,7 +191,9 @@ namespace StudentRanking.Controllers
             }
 
             ViewData["isThirdRankListPublished"] = false;
-            if (queryManager.getRankingDatesContent().Count != 0 && queryManager.getRankingDatesContent().Last().FirstRankingDate == "true")
+            if (queryManager.getRankingDatesContent().Count != 0
+                && queryManager.getRankingDatesContent().Last().SecondRankingDate == "true")
+
             {
                 ViewData["isThirdRankListPublished"] = true;
             }

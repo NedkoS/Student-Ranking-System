@@ -583,6 +583,25 @@ namespace StudentRanking.Ranking
             return result;
         }
 
+        //public bool isRankingReady(String ranking)
+        //{
+        //    lockManager();
+        //    var rankings = from data in context.Dates
+        //                   select data;
+        //    bool result = false;
+
+        //    var rankingsList = rankings.ToList();
+        //    switch (ranking)
+        //    {
+        //        case "first": result = rankingsList.Last().FirstRankingDate == "true"; break;
+        //        case "second": result = rankingsList.Last().SecondRankingDate == "true"; break;
+        //        case "third": result = rankingsList.Last().ThirdRankingDate == "true"; break;
+        //    }
+
+        //    unlockManager();
+        //    return result;
+        //}
+
         public void Dispose()
         {
             //context.Dispose();

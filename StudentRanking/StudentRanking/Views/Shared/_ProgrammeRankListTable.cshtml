@@ -23,7 +23,7 @@
             </tr>
 
 
-            foreach (var item in Model)
+            foreach (var item in Model.OrderByDescending(item => item.TotalGrade))
             {
                 <tr>
                     <td>
@@ -41,6 +41,12 @@
                 </tr>
                 i++;
             }
+        }
+        else
+        {
+            <div style="color:purple">
+                <strong>Няма класирани студенти.</strong>
+            </div>
         }
     </table>
 </div>

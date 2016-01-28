@@ -76,6 +76,7 @@
         };
 
         function Publish() {
+            DisplayLoadingDiv();
             $.ajax({
 
                 type: 'post',
@@ -85,7 +86,20 @@
                 }
 
             });
+
         };
+
+        function DisplayLoadingDiv() {
+            document.getElementById("img-container").style.display = '';
+            var arr = document.getElementsByClassName("publish-btn-container");
+            for (i = 0; i < arr.length; i++) {
+                arr[i].style.visibility = 'hidden';
+            }
+            var loadingImage = document.getElementById("loading-img");
+            var attr = document.createAttribute("src");
+            attr.value = "../../img/loading.gif";
+            loadingImage.setAttributeNode(attr);
+        }
     </script>
 }
 
@@ -96,8 +110,14 @@
 {
     if (isMainAdmin && !isFirstRankListPublished)
     {
-        <label>Натиснете бутона, за да публикувате първото класирането.</label>
-        <input type="submit" value="Публикувайте" onclick="javascript: Publish()" />
+        <div id="img-container">
+            <img id="loading-img" />
+        </div>
+        
+        <div class="publish-btn-container">
+            <label>Натиснете бутона, за да публикувате първото класиране.</label>
+            <input type="submit" value="Публикувайте" onclick="javascript: Publish()" />
+        </div>
     }
     else
     {
@@ -140,8 +160,14 @@ else
 {
     if (isMainAdmin && !isSecondRankListPublished)
     {
-        <label>Натиснете бутона, за да публикувате второто класирането.</label>
-        <input type="submit" value="Публикувайте" onclick="javascript: Publish()" />
+        <div id="img-container">
+            <img id="loading-img" />
+        </div>
+
+        <div class="publish-btn-container">
+            <label>Натиснете бутона, за да публикувате второто класиране.</label>
+            <input type="submit" value="Публикувайте" onclick="javascript: Publish()" />
+        </div>
     }
     else
     {
@@ -172,13 +198,18 @@ else
 }
 
 
-
 @if (isThirdRankingDate)
 {
     if (isMainAdmin && !isThirdRankListPublished)
     {
-        <label>Натиснете бутона, за да публикувате третото класирането.</label>
-        <input type="submit" value="Публикувайте" onclick="javascript: Publish()" />
+        <div id="img-container">
+            <img id="loading-img" />
+        </div>
+
+        <div class="publish-btn-container">
+            <label>Натиснете бутона, за да публикувате третото класиране.</label>
+            <input type="submit" value="Публикувайте" onclick="javascript: Publish()" />
+        </div>
     }
     else
     {
