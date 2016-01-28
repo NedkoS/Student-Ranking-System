@@ -102,6 +102,37 @@ namespace StudentRanking.Controllers
 
         }
 
+        private ProgrammeProperties getProgrammeRule(Formula formula)
+        {
+            ProgrammeProperties rule = new ProgrammeProperties();
+            if (formula.C1 > 0)
+            {
+                rule.C1 = formula.C1;
+                rule.X = formula.X;
+
+            }
+
+            if (formula.C2 > 0)
+            {
+                rule.C2 = formula.C2;
+                rule.Y = formula.Y;
+            }
+
+            if (formula.C3 > 0)
+            {
+                rule.C3 = formula.C3;
+                rule.Z = formula.Z;
+            }
+
+            if (formula.C4 > 0)
+            {
+                rule.C4 = formula.C4;
+                rule.W = formula.W;
+            }
+
+            return rule;
+        }
+
 
         private List<ProgrammeProperties> getProgrammeRules(String programmeName)
         {
@@ -111,40 +142,35 @@ namespace StudentRanking.Controllers
 
             ProgrammeRules pr = queryManager.findProgrammeRule(programmeName);
 
-
-            foreach (var formula in formulae)
+            if (pr != null)
             {
-                ProgrammeProperties rule = new ProgrammeProperties();
-                rule.MaleCount = pr.MaleCount;
-                rule.FemaleCount = pr.FemaleCount;
-                rule.ProgrammeName = programmeName;
-                if (formula.C1 > 0)
+                foreach (var formula in formulae)
                 {
-                    rule.C1 = formula.C1;
-                    rule.X = formula.X;
-
+                    ProgrammeProperties rule = getProgrammeRule(formula);// new ProgrammeProperties();
+                    rule.MaleCount = pr.MaleCount;
+                    rule.FemaleCount = pr.FemaleCount;
+                    rule.ProgrammeName = programmeName;
+                    result.Add(rule);
                 }
 
-                if (formula.C2 > 0)
+                if (formulae.Count == 0)
                 {
-                    rule.C2 = formula.C2;
-                    rule.Y = formula.Y;
+                    ProgrammeProperties rule = new ProgrammeProperties();
+                    rule.MaleCount = pr.MaleCount;
+                    rule.FemaleCount = pr.FemaleCount;
+                    rule.ProgrammeName = programmeName;
+                    result.Add(rule);
                 }
-
-                if (formula.C3 > 0)
-                {
-                    rule.C3 = formula.C3;
-                    rule.Z = formula.Z;
-                }
-
-                if (formula.C4 > 0)
-                {
-                    rule.C4 = formula.C4;
-                    rule.W = formula.W;
-                }
-
-                result.Add(rule);
             }
+            else
+            {
+                foreach (var formula in formulae)
+                {
+                    ProgrammeProperties rule = getProgrammeRule(formula);// new ProgrammeProperties();
+                    result.Add(rule);
+                }
+            }
+            
 
             return result;
         }
