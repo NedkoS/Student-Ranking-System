@@ -2,7 +2,9 @@
 using StudentRanking.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Threading;
 using System.Web;
 
 namespace StudentRanking.Ranking
@@ -18,7 +20,7 @@ namespace StudentRanking.Ranking
             
         }
 
-        public void setUsersContext(UsersContext context)
+        public void setContext(UsersContext context)
         {
             this.context = context;
         }
@@ -42,6 +44,35 @@ namespace StudentRanking.Ranking
                 context.FacultyRankLists.Remove(entry);
             }
 
+            context.SaveChanges();
+        }
+
+        public void addUser(String userName)
+        {
+            context.UserProfiles.Add(new UserProfile { UserName = userName });
+            context.SaveChanges();
+        }
+
+        public UserProfile getUser(String userName)
+        {
+            return context.UserProfiles.FirstOrDefault(u => u.UserName.ToLower() == userName.ToLower());
+        }
+
+        public List<RankingDates> getRankingDatesContent()
+        {
+            return context.Dates.ToList();
+        }
+
+        public void addRankingDatesContent(RankingDates content)
+        {
+            context.Dates.Add(content);
+            context.SaveChanges();
+        }
+
+        public void removeRankingDates(RankingDates dates)
+        {
+            context.Dates.Attach(dates);
+            context.Dates.Remove(dates);
             context.SaveChanges();
         }
 
@@ -123,16 +154,6 @@ namespace StudentRanking.Ranking
                 context.FacultyRankLists.Remove(entry);
             }
             context.SaveChanges();
-        }
-
-        //get faculty by a programme name
-        public String getFaculty(String programmeName)
-        {
-            var query = from ProgrammeToFaculty in context.Faculties
-                        where ProgrammeToFaculty.ProgrammeName == programmeName
-                        select ProgrammeToFaculty.FacultyName;
-
-            return query.First();
         }
 
         //get male/female student count allowed for a programme
@@ -302,5 +323,147 @@ namespace StudentRanking.Ranking
 
             return new RankingDates();
         }
+
+        public List<Exam> getExamsOfStudent(String EGN)
+        {
+            var exams = from exam in context.Exams
+                        where exam.StudentEGN == EGN
+                        select exam;
+
+            return exams.ToList();
+        }
+
+        public Exam findExamOfStudent(String examName, String EGN)
+        {
+            return context.Exams.Find(examName, EGN);
+        }
+
+        public List<String> getExamNames()
+        {
+            var examsNames = from exam in context.ExamNames
+                             select exam.Name;
+
+            return examsNames.ToList();
+        }
+
+        public void addExam(Exam exam)
+        {
+            context.Exams.Add(exam);
+            context.SaveChanges();
+        }
+
+        public void setExamState(Exam exam, EntityState state)
+        {
+            context.Entry(exam).State = state;
+            context.SaveChanges();
+        }
+
+        public void removeExam(Exam exam)
+        {
+            context.Exams.Remove(exam);
+            context.SaveChanges();
+        }
+
+        public List<Faculty> getFaculties()
+        {
+            return context.Faculties.ToList();
+        }
+
+        public void setDatesState(RankingDates dates, EntityState state)
+        {
+            context.Entry(dates).State = state;
+            context.SaveChanges();
+        }
+
+        public ProgrammeRules findProgrammeRule(String programmeName)
+        {
+            return context.ProgrammesRules.Find(programmeName);
+        }
+
+        public void addProgrammeRule(ProgrammeRules rule)
+        {
+            context.ProgrammesRules.Add(rule);
+            context.SaveChanges();
+        }
+
+        public void setProgrammeRuleState(ProgrammeRules rule, EntityState state)
+        {
+            context.Entry(rule).State = state;
+            context.SaveChanges();
+        }
+
+        public List<Formula> getProgrammeFormulae(String programmeName)
+        {
+            var query = from formula in context.Formulas
+                        where formula.ProgrammeName == programmeName
+                        select formula;
+
+            return query.ToList();
+        }
+
+        public List<Student> getStudents()
+        {
+            return context.Students.ToList();
+        }
+
+        public void addStudent(Student student)
+        {
+            context.Students.Add(student);
+            context.SaveChanges();
+
+        }
+
+        public void setStudentState(Student student, EntityState state)
+        {
+            context.Entry(student).State = state;
+            context.SaveChanges();
+        }
+
+        public void removeStudent(Student student)
+        {
+            context.Students.Remove(student);
+            context.SaveChanges();
+        }
+
+        public Student findStudent(String id)
+        {
+            return context.Students.Find(id);
+        }
+
+        public Faculty getFaculty(String programmeName)
+        {
+            return context.Faculties.Find(programmeName);
+        }
+
+        public void removePreference(Preference preference)
+        {
+            context.Preferences.Attach(preference);
+            context.Preferences.Remove(preference);
+            context.SaveChanges();
+        }
+
+        public List<String> getProgrammeNames(String facultyName)
+        {
+            var query = from b in context.Faculties
+                    where b.FacultyName == facultyName
+                    select b.ProgrammeName;
+
+            return query.ToList();
+        }
+
+        public int getPrefNumber(String EGN, String programmeName)
+        {
+             var prefNumber = from pref in context.Preferences
+                where pref.EGN == EGN && pref.ProgrammeName == programmeName
+                select pref.PrefNumber;
+
+            return prefNumber.First();
+        }
+
+        public void Dispose()
+        {
+            //context.Dispose();
+        }
+
     }
 }

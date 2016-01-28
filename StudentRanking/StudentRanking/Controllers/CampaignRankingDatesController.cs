@@ -1,5 +1,6 @@
 ﻿using StudentRanking.DataAccess;
 using StudentRanking.Models;
+using StudentRanking.Ranking;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -12,7 +13,6 @@ namespace StudentRanking.Controllers
     [Authorize(Roles = "admin")]
     public class CampaignRankingDatesController : Controller
     {
-        private UsersContext db = new UsersContext();
         //
         // GET: /RankingDates/
 
@@ -36,7 +36,7 @@ namespace StudentRanking.Controllers
                 ThirdRankingDate = ranking.ThirdRankingDate.ToString()
             };
 
-            RankingDates d = new RankingDates
+            RankingDates flags = new RankingDates
             {
                 FirstRankingDate = "false",
                 PreferrencesFirstDate = "false",
@@ -45,27 +45,23 @@ namespace StudentRanking.Controllers
                 ThirdRankingDate = "false"
             };
 
-            if (db.Dates.ToList().Count() != 0)
+            QueryManager queryManager = QueryManager.getInstance();
+
+            List<RankingDates> rankingDates = queryManager.getRankingDatesContent();
+            if (rankingDates.Count() != 0)
             {
-                
-                RankingDates p = db.Dates.ToList().First();
-                RankingDates q = db.Dates.ToList().Last();
 
-                db.Dates.Attach(p);
-                db.Dates.Remove(p);
-                db.SaveChanges();
+                RankingDates p = rankingDates.First();
+                RankingDates q = rankingDates.Last();
 
-                db.Dates.Attach(q);
-                db.Dates.Remove(q);
-                db.SaveChanges();
+                queryManager.removeRankingDates(p);
+                queryManager.removeRankingDates(q);
             }
 
 
-            db.Dates.Add(dates);
-            db.SaveChanges();
+            queryManager.addRankingDatesContent(dates);
 
-            db.Dates.Add(d);
-            db.SaveChanges();
+            queryManager.addRankingDatesContent(flags);
 
             return RedirectToAction("Menu", "Admin");  
         }

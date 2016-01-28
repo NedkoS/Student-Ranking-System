@@ -112,7 +112,7 @@ namespace StudentRanking.Ranking
 
             foreach (Preference preference in preferences)
             {
-                String faculty = queryManager.getFaculty(preference.ProgrammeName);
+                String faculty = queryManager.getFaculty(preference.ProgrammeName).FacultyName;
 
 
                 if (!splittedPreferences.TryGetValue(faculty, out value))

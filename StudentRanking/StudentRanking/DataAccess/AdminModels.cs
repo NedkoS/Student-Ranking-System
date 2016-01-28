@@ -1,4 +1,5 @@
 ﻿using StudentRanking.DataAccess;
+using StudentRanking.Ranking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,27 +9,15 @@ namespace StudentRanking.DataAccess
 {
     public class RulesModel
     {
+        QueryManager queryManager = QueryManager.getInstance();
         public List<String> Faculties()
         {
-            
-            UsersContext context = new UsersContext();
-
-            var f = from b in context.Faculties
-                    select b.FacultyName;
-
-            return f.ToList<String>();
+            return queryManager.getFacultyNames();
         }
 
         public List<String> Programmes(String facultyName)
         {
-            
-            UsersContext context = new UsersContext();
-
-            var f = from b in context.Faculties
-                    where b.FacultyName == facultyName
-                    select b.ProgrammeName;
-
-            return f.ToList<String>();
+            return queryManager.getProgrammeNames(facultyName);
         }
 
         public int maleCount;

@@ -45,9 +45,8 @@ namespace StudentRanking.Controllers
             if ( ModelState.IsValid && WebSecurity.Login(model.UserName, model.Password, persistCookie: model.RememberMe)
                  && model.UserName == "Admin" )
             {
-                UsersContext db = new UsersContext();
-
-                if (db.Dates.ToList().Count() == 0)
+                QueryManager queryManager = QueryManager.getInstance();
+                if (queryManager.getRankingDatesContent().Count() == 0)
                 {
                     return RedirectToAction("index", "CampaignRankingDates");
                 }
@@ -330,15 +329,14 @@ namespace StudentRanking.Controllers
             if (ModelState.IsValid)
             {
                 // Insert a new user into the database
-                using (UsersContext db = new UsersContext())
-                {
-                    UserProfile user = db.UserProfiles.FirstOrDefault(u => u.UserName.ToLower() == model.UserName.ToLower());
+
+                QueryManager queryManager = QueryManager.getInstance();
+                UserProfile user = queryManager.getUser(model.UserName);
                     // Check if user already exists
                     if (user == null)
                     {
                         // Insert name into the profile table
-                        db.UserProfiles.Add(new UserProfile { UserName = model.UserName });
-                        db.SaveChanges();
+                        queryManager.addUser(model.UserName);
 
                         OAuthWebSecurity.CreateOrUpdateAccount(provider, providerUserId, model.UserName);
                         OAuthWebSecurity.Login(provider, providerUserId, createPersistentCookie: false);
@@ -349,7 +347,7 @@ namespace StudentRanking.Controllers
                     {
                         ModelState.AddModelError("UserName", "User name already exists. Please enter a different user name.");
                     }
-                }
+                
             }
 
             ViewBag.ProviderDisplayName = OAuthWebSecurity.GetOAuthClientData(provider).DisplayName;

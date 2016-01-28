@@ -34,7 +34,7 @@ namespace StudentRanking
 
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("en-US");
 
-            QueryManager.getInstance().setUsersContext(new UsersContext());
+            QueryManager.getInstance().setContext(new UsersContext());
         }
     }
 }

@@ -16,7 +16,7 @@ namespace StudentRanking.Controllers
     {
         //
         // GET: /StudentPreferences/
-        private UsersContext db = new UsersContext();
+        private QueryManager queryManager = QueryManager.getInstance();
         private Dictionary<String, List<String>> programmes = new Dictionary<String, List<String>>();
         private List<StudentPreferences> model = new List<StudentPreferences>();
 
@@ -48,7 +48,7 @@ namespace StudentRanking.Controllers
             //List<Faculty> faculties = new List<Faculty>();
             ////faculties = db.Faculties.ToList();
 
-            var faculties = db.Faculties.ToList();
+            var faculties = queryManager.getFaculties();
 
             foreach (var faculty in faculties)
             {
@@ -107,7 +107,7 @@ namespace StudentRanking.Controllers
 
             foreach (var preff in studentPreferences)
             {
-                Faculty f = db.Faculties.Find(preff.ProgrammeName);
+                Faculty f = queryManager.getFaculty(preff.ProgrammeName);
                 String fac = (f != null ) ? f.FacultyName : "";
                 StudentPreferences pr = new StudentPreferences
                 {
@@ -162,7 +162,7 @@ namespace StudentRanking.Controllers
             bool isPreferrenceRepeated = false;
             foreach (var preff in studentPreferences)
             {
-                String fac = db.Faculties.Find(preff.ProgrammeName).FacultyName;
+                String fac = queryManager.getFaculty(preff.ProgrammeName).FacultyName;
                 StudentPreferences pr = new StudentPreferences { Faculty = fac, ProgrammeName = preff.ProgrammeName,
                                                                  PrefNumber = preff.PrefNumber };
                 if (faculty == fac && preff.ProgrammeName == programmeName)
@@ -192,8 +192,7 @@ namespace StudentRanking.Controllers
                     TotalGrade = 0
                 };
 
-                db.Preferences.Add(p);
-                db.SaveChanges();
+                queryManager.addPreference(p);
                 model.Add(pref);
             }
             
@@ -213,9 +212,8 @@ namespace StudentRanking.Controllers
             if (studentPreferences.Count() > 0 )
             {
                 Preference p = studentPreferences.Last();
-                db.Preferences.Attach(p);
-                db.Preferences.Remove(p);
-                db.SaveChanges();
+                queryManager.removePreference(p);
+
             }
 
             var redirectUrl = new UrlHelper(Request.RequestContext).Action("Index", "StudentPreferences");

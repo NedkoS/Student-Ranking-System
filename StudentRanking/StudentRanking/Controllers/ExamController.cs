@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using StudentRanking.Models;
 using StudentRanking.DataAccess;
+using StudentRanking.Ranking;
 
 
 namespace StudentRanking.Controllers
@@ -14,8 +15,7 @@ namespace StudentRanking.Controllers
     [Authorize(Roles = "admin")]
     public class ExamController : Controller
     {
-        private UsersContext db = new UsersContext();
-
+        QueryManager queryManager = QueryManager.getInstance();
         //
         // GET: /Exam/
 
@@ -28,10 +28,8 @@ namespace StudentRanking.Controllers
         [HttpPost]
         public ActionResult Index(String egn)
         {
-            var exams = from exam in db.Exams
-                        where exam.StudentEGN == egn
-                        select exam;
-            return PartialView("_StudentExamsGrades", exams);
+
+            return PartialView("_StudentExamsGrades", queryManager.getExamsOfStudent(egn));
         }
 
         //
@@ -39,7 +37,7 @@ namespace StudentRanking.Controllers
 
         public ActionResult Details(string examName = null, string studentEGN = null)
         {
-            Exam exam = db.Exams.Find(examName, studentEGN);
+            Exam exam = queryManager.findExamOfStudent(examName, studentEGN);
             if (exam == null)
             {
                 return HttpNotFound();
@@ -59,11 +57,8 @@ namespace StudentRanking.Controllers
             //programmes.Add("Математика 1");
             //programmes.Add("Математика 2");
 
-            var examsNames = from exam in db.ExamNames
-                             select exam.Name;
 
-
-            ViewData["currentExamName"] = new SelectList(examsNames.ToList());
+            ViewData["currentExamName"] = new SelectList(queryManager.getExamNames());
             return View();
         }
 
@@ -74,16 +69,12 @@ namespace StudentRanking.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Exam exam)
         {
-            var examsNames = from exam2 in db.ExamNames
-                             select exam2.Name;
 
-
-            ViewData["currentExamName"] = new SelectList(examsNames.ToList());
+            ViewData["currentExamName"] = new SelectList(queryManager.getExamNames());
 
             if (ModelState.IsValid)
             {
-                db.Exams.Add(exam);
-                db.SaveChanges();
+                queryManager.addExam(exam);
                 return RedirectToAction("Create", "Exam");
             }
 
@@ -95,7 +86,7 @@ namespace StudentRanking.Controllers
 
         public ActionResult Edit(string examName = null, string studentEGN = null)
         {
-            Exam exam = db.Exams.Find(examName, studentEGN);
+            Exam exam = queryManager.findExamOfStudent(examName, studentEGN);
             if (exam == null)
             {
                 return HttpNotFound();
@@ -112,8 +103,7 @@ namespace StudentRanking.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(exam).State = EntityState.Modified;
-                db.SaveChanges();
+                queryManager.setExamState(exam, EntityState.Modified);
                 return RedirectToAction("Index");
             }
             return View(exam);
@@ -124,7 +114,7 @@ namespace StudentRanking.Controllers
 
         public ActionResult Delete(string examName = null, string studentEGN = null)
         {
-            Exam exam = db.Exams.Find(examName,studentEGN);
+            Exam exam = queryManager.findExamOfStudent(examName,studentEGN);
             if (exam == null)
             {
                 return HttpNotFound();
@@ -139,15 +129,14 @@ namespace StudentRanking.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(string examName = null, string studentEGN = null)
         {
-            Exam exam = db.Exams.Find(examName, studentEGN);
-            db.Exams.Remove(exam);
-            db.SaveChanges();
+            Exam exam = queryManager.findExamOfStudent(examName, studentEGN);
+            queryManager.removeExam(exam);
             return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
         {
-            db.Dispose();
+            queryManager.Dispose();
             base.Dispose(disposing);
         }
 

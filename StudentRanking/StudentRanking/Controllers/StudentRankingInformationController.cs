@@ -15,7 +15,7 @@ namespace StudentRanking.Models
     {
         //
         // GET: /StudentRankingInformation/
-        private UsersContext db = new UsersContext();
+        private QueryManager queryManager = QueryManager.getInstance();
         private Dictionary<String, List<String>> programmes = new Dictionary<String, List<String>>();
         private List<StudentRankingInformation> model = new List<StudentRankingInformation>();
 
@@ -33,18 +33,18 @@ namespace StudentRanking.Models
         public ActionResult Index()
         {
 
-
+            
             String user = User.Identity.Name;
             ViewData["userName"] = user;
+            QueryManager manager = QueryManager.getInstance();
 
             bool isEnrolled = false;
-            Student st = db.Students.Find(user);
+            Student st = manager.findStudent(user);
             if ( st != null )
             {
                 isEnrolled = st.IsEnrolled;
             }
 
-            QueryManager manager = QueryManager.getInstance();
             List<FacultyRankList> rankList = manager.getStudentRankList(user);
 
             ViewData["enrolledProgramme"] = "";
@@ -56,7 +56,7 @@ namespace StudentRanking.Models
                 if (rankList.Count() == 1)
                 {
                     ViewData["enrolledProgramme"] = rankList.First().ProgrammeName;
-                    Faculty f = db.Faculties.Find(ViewData["enrolledProgramme"]);
+                    Faculty f = manager.getFaculty((String)ViewData["enrolledProgramme"]);
                     ViewData["faculty"] = f.FacultyName;
                 }
                 return View(model);
@@ -88,7 +88,7 @@ namespace StudentRanking.Models
 
             // класиране първи етап - дати
             ViewData["isFirstRankListPublished"] = false;
-            if (db.Dates.ToList().Count != 0 &&  db.Dates.ToList().Last().FirstRankingDate == "true")
+            if (mng.getRankingDatesContent().Count != 0 && mng.getRankingDatesContent().Last().FirstRankingDate == "true")
             {
                 ViewData["isFirstRankListPublished"] = true;
             }
@@ -96,14 +96,14 @@ namespace StudentRanking.Models
 
             // класиране втори етап - дати
             ViewData["isSecondRankListPublished"] = false;
-            if (db.Dates.ToList().Count != 0 &&  db.Dates.ToList().Last().FirstRankingDate == "true")
+            if (mng.getRankingDatesContent().Count != 0 && mng.getRankingDatesContent().Last().FirstRankingDate == "true")
             {
                 ViewData["isSecondRankListPublished"] = true;
             }
 
             // класиране трети етап - дати
             ViewData["isThirdRankListPublished"] = false;
-            if (db.Dates.ToList().Count != 0 &&  db.Dates.ToList().Last().FirstRankingDate == "true")
+            if (mng.getRankingDatesContent().Count != 0 && mng.getRankingDatesContent().Last().FirstRankingDate == "true")
             {
                 ViewData["isThirdRankListPublished"] = true;
             }
@@ -117,15 +117,13 @@ namespace StudentRanking.Models
             Dictionary<String, int> prefNumbers = new Dictionary<String, int>();
             foreach (var item in studentProgrammes)
             {
-                var prefNumber = from pref in db.Preferences
-                                 where pref.EGN == user && pref.ProgrammeName == item
-                                 select pref.PrefNumber;
-                prefNumbers.Add(item, prefNumber.First());
+                int number = queryManager.getPrefNumber(user, item);
+                prefNumbers.Add(item, number);
             }
 
             foreach (var item in studentRankList)
             {
-                String faculty = db.Faculties.Find(item.ProgrammeName).FacultyName;
+                String faculty = queryManager.getFaculty(item.ProgrammeName).FacultyName;
                 StudentRankingInformation r = new StudentRankingInformation
                 {
                     FacultyName = faculty,
@@ -146,12 +144,11 @@ namespace StudentRanking.Models
         {
             String user = User.Identity.Name;
             ViewData["userName"] = user;
-            Student st = db.Students.Find(user);
+            Student st = queryManager.findStudent(user);
 
             st.IsEnrolled = true;
-            
-            db.Entry(st).State = EntityState.Modified;
-            db.SaveChanges();
+
+            queryManager.setStudentState(st, EntityState.Modified);
             ViewData["isEnrolled"] = true;
 
             QueryManager manager = QueryManager.getInstance();
@@ -161,9 +158,7 @@ namespace StudentRanking.Models
             {
                 if (item.ProgrammeName != programmeName)
                 {
-                    db.FacultyRankLists.Attach(item);
-                    db.FacultyRankLists.Remove(item);
-                    db.SaveChanges();
+                    queryManager.removeFacultyRankListItem(item);
                 }
             }
 

@@ -17,7 +17,7 @@ namespace StudentRanking.Controllers
     [Authorize(Roles = "admin")]
     public class ProgrammeRankListController : Controller
     {
-        private UsersContext db = new UsersContext();
+        private QueryManager queryManager = QueryManager.getInstance();
         private Dictionary<String, List<String>> programmes = new Dictionary<String, List<String>>();
         private List<FacultyRankList> model = new List<FacultyRankList>();
         //
@@ -25,7 +25,7 @@ namespace StudentRanking.Controllers
 
         public ProgrammeRankListController()
         {
-            var faculties = db.Faculties.ToList();
+            var faculties = queryManager.getFaculties();
 
             foreach (var faculty in faculties)
             {
@@ -77,7 +77,7 @@ namespace StudentRanking.Controllers
             }
 
             ViewData["isFirstRankListPublished"] = false;
-            if (db.Dates.ToList().Count != 0 && db.Dates.ToList().Last().FirstRankingDate == "true")
+            if (queryManager.getRankingDatesContent().Count != 0 && queryManager.getRankingDatesContent().Last().FirstRankingDate == "true")
             {
                 ViewData["isFirstRankListPublished"] = true;
             }
@@ -92,7 +92,7 @@ namespace StudentRanking.Controllers
             }
 
             ViewData["isSecondRankListPublished"] = false;
-            if (db.Dates.ToList().Count != 0 && db.Dates.ToList().Last().FirstRankingDate == "true")
+            if (queryManager.getRankingDatesContent().Count != 0 && queryManager.getRankingDatesContent().Last().FirstRankingDate == "true")
             {
                 ViewData["isSecondRankListPublished"] = true;
             }
@@ -106,7 +106,7 @@ namespace StudentRanking.Controllers
             }
 
             ViewData["isThirdRankListPublished"] = false;
-            if (db.Dates.ToList().Count != 0 &&  db.Dates.ToList().Last().FirstRankingDate == "true")
+            if (queryManager.getRankingDatesContent().Count != 0 && queryManager.getRankingDatesContent().Last().FirstRankingDate == "true")
             {
                 ViewData["isThirdRankListPublished"] = true;
             }
@@ -144,11 +144,10 @@ namespace StudentRanking.Controllers
             ViewData["faculties"] = faculties;
             
             //проверка дали е настъпила дата за обявяване на класиране
-
-            QueryManager mng = QueryManager.getInstance();
+            QueryManager queryManager = QueryManager.getInstance();
 
             // класиране първи етап - дати
-            DateTime first = Convert.ToDateTime(mng.getCampaignDates().FirstRankingDate);
+            DateTime first = Convert.ToDateTime(queryManager.getCampaignDates().FirstRankingDate);
             ViewData["isFirstRankingDate"] = false;
             if (DateTime.Today >= first)
             {
@@ -156,14 +155,14 @@ namespace StudentRanking.Controllers
             }
 
             ViewData["isFirstRankListPublished"] = false;
-            if (db.Dates.ToList().Count != 0 && db.Dates.ToList().Last().FirstRankingDate == "true")
+            if (queryManager.getRankingDatesContent().Count != 0 && queryManager.getRankingDatesContent().Last().FirstRankingDate == "true")
             {
                 ViewData["isFirstRankListPublished"] = true;
             }
 
 
             // класиране втори етап - дати
-            DateTime second = Convert.ToDateTime(mng.getCampaignDates().SecondRankingDate);
+            DateTime second = Convert.ToDateTime(queryManager.getCampaignDates().SecondRankingDate);
             ViewData["isSecondRankingDate"] = false;
             if (DateTime.Today >= second)
             {
@@ -171,13 +170,13 @@ namespace StudentRanking.Controllers
             }
 
             ViewData["isSecondRankListPublished"] = false;
-            if (db.Dates.ToList().Count != 0 &&  db.Dates.ToList().Last().FirstRankingDate == "true")
+            if (queryManager.getRankingDatesContent().Count != 0 && queryManager.getRankingDatesContent().Last().FirstRankingDate == "true")
             {
                 ViewData["isSecondRankListPublished"] = true;
             }
 
             // класиране трети етап - дати
-            DateTime third = Convert.ToDateTime(mng.getCampaignDates().ThirdRankingDate);
+            DateTime third = Convert.ToDateTime(queryManager.getCampaignDates().ThirdRankingDate);
             ViewData["isThirdRankingDate"] = false;
             if (DateTime.Today >= third)
             {
@@ -185,7 +184,7 @@ namespace StudentRanking.Controllers
             }
 
             ViewData["isThirdRankListPublished"] = false;
-            if (db.Dates.ToList().Count != 0 && db.Dates.ToList().Last().FirstRankingDate == "true")
+            if (queryManager.getRankingDatesContent().Count != 0 && queryManager.getRankingDatesContent().Last().FirstRankingDate == "true")
             {
                 ViewData["isThirdRankListPublished"] = true;
             }
@@ -202,8 +201,6 @@ namespace StudentRanking.Controllers
             {
                 ViewData["mainAdmin"] = true;
             }
-
-            QueryManager queryManager = QueryManager.getInstance();
 
             List<FacultyRankList> rankList = queryManager.getRankList(programmeName);
 
@@ -244,30 +241,27 @@ namespace StudentRanking.Controllers
             ranker.setOnFinishListener(onAlgoFinished);
             ViewBag.isReady = false;
 
-            RankingDates dates = db.Dates.ToList().Last();
+            RankingDates dates = queryManager.getRankingDatesContent().Last();
 
             
             if (dates.FirstRankingDate == "false")
             {
                 dates.FirstRankingDate = "true";
-                db.Entry(dates).State = EntityState.Modified;
-                db.SaveChanges();
+                queryManager.setDatesState(dates, EntityState.Modified);
             }
             else
             {
                 if (dates.FirstRankingDate == "true" && dates.SecondRankingDate == "false")
                 {
                     dates.SecondRankingDate = "true";
-                    db.Entry(dates).State = EntityState.Modified;
-                    db.SaveChanges();
+                    queryManager.setDatesState(dates, EntityState.Modified);
                 }
                 else
                 {
                     if (dates.SecondRankingDate == "true" && dates.ThirdRankingDate == "false")
                     {
                         dates.ThirdRankingDate = "true";
-                        db.Entry(dates).State = EntityState.Modified;
-                        db.SaveChanges();
+                        queryManager.setDatesState(dates, EntityState.Modified);
                     }
                 }
 

@@ -19,7 +19,7 @@ namespace StudentRanking.Controllers
     [Authorize(Roles = "admin")]
     public class StudentBrowseController : Controller
     {
-        private UsersContext db = new UsersContext();
+        private QueryManager queryManager = QueryManager.getInstance();
 
         //
         // GET: /StudentBrowse/
@@ -50,9 +50,9 @@ namespace StudentRanking.Controllers
             //}
 
             //System.IO.File.WriteAllText(@"D:\WriteText.txt", text);
-
+            
             if (egn == "")
-                return View(db.Students.ToList());
+                return View(queryManager.getStudents());
             else
                 return Details(egn);
         }
@@ -73,7 +73,7 @@ namespace StudentRanking.Controllers
 
         public ActionResult Details(string id = null)
         {
-            Student student = db.Students.Find(id);
+            Student student = queryManager.findStudent(id);
             if (student == null)
             {
                 return HttpNotFound();
@@ -106,10 +106,8 @@ namespace StudentRanking.Controllers
         {
             if (ModelState.IsValid)
             {
-                
-                db.Students.Add(student);
-                db.SaveChanges();
 
+                queryManager.addStudent(student);
                 string newPassword = Membership.GeneratePassword(10, 0);
                 Random rnd = new Random();
                 newPassword = Regex.Replace(newPassword, @"[^a-zA-Z0-9]", m => rnd.Next(0, 10).ToString());
@@ -155,7 +153,7 @@ namespace StudentRanking.Controllers
 
         public ActionResult Edit(string id = null)
         {
-            Student student = db.Students.Find(id);
+            Student student = queryManager.findStudent(id);
             if (student == null)
             {
                 return HttpNotFound();
@@ -172,8 +170,7 @@ namespace StudentRanking.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(student).State = EntityState.Modified;
-                db.SaveChanges();
+                queryManager.setStudentState(student, EntityState.Modified);
                 return RedirectToAction("Index");
             }
             return View(student);
@@ -184,7 +181,7 @@ namespace StudentRanking.Controllers
 
         public ActionResult Delete(string id = null)
         {
-            Student student = db.Students.Find(id);
+            Student student = queryManager.findStudent(id);
             if (student == null)
             {
                 return HttpNotFound();
@@ -203,15 +200,14 @@ namespace StudentRanking.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(string id)
         {
-            Student student = db.Students.Find(id);
-            db.Students.Remove(student);
-            db.SaveChanges();
+            Student student = queryManager.findStudent(id);
+            queryManager.removeStudent(student);
             return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
         {
-            db.Dispose();
+            queryManager.Dispose();
             base.Dispose(disposing);
         }
     }

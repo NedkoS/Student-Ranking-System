@@ -7,13 +7,14 @@ using System.Web;
 using System.Web.Mvc;
 using StudentRanking.Models;
 using StudentRanking.DataAccess;
+using StudentRanking.Ranking;
 
 namespace StudentRanking.Controllers
 {
     [Authorize(Roles = "admin")]
     public class ProgrammeRulesController : Controller
     {
-        private UsersContext db = new UsersContext();
+        private QueryManager queryManager = QueryManager.getInstance();
         private List<ProgrammeProperties> model = new List<ProgrammeProperties>();
         private Dictionary<String, List<String>> programmes = new Dictionary<String, List<String>>();
 
@@ -25,7 +26,7 @@ namespace StudentRanking.Controllers
         {
 
 
-            var faculties = db.Faculties.ToList();
+            var faculties = queryManager.getFaculties();
 
             foreach (var faculty in faculties)
             {
@@ -83,22 +84,21 @@ namespace StudentRanking.Controllers
         public void SaveCounts(int maleCount, int femaleCount, string programmeName)
         {
             //ako crashnat int-ovete napravi si go sys string parametri
-            var rule = db.ProgrammesRules.Find(programmeName);
+           
+            var rule = queryManager.findProgrammeRule(programmeName);
             if (rule == null)
             {
-                db.ProgrammesRules.Add(new ProgrammeRules()
+                queryManager.addProgrammeRule(new ProgrammeRules()
                 {
                     FemaleCount = femaleCount,
                     MaleCount = maleCount,
                     ProgrammeName = programmeName
                 });
-                db.SaveChanges();
                 return;
             }
             rule.MaleCount = maleCount;
             rule.FemaleCount = femaleCount;
-            db.Entry(rule).State = EntityState.Modified;
-            db.SaveChanges();
+            queryManager.setProgrammeRuleState(rule, EntityState.Modified);
 
         }
 
@@ -106,14 +106,13 @@ namespace StudentRanking.Controllers
         private List<ProgrammeProperties> getProgrammeRules(String programmeName)
         {
             List<ProgrammeProperties> result = new List<ProgrammeProperties>();
-            var query = from formula in db.Formulas
-                        where formula.ProgrammeName == programmeName
-                        select formula;
 
-            ProgrammeRules pr = db.ProgrammesRules.Find(programmeName);
+            var formulae = queryManager.getProgrammeFormulae(programmeName);
+
+            ProgrammeRules pr = queryManager.findProgrammeRule(programmeName);
 
 
-            foreach (var formula in query)
+            foreach (var formula in formulae)
             {
                 ProgrammeProperties rule = new ProgrammeProperties();
                 rule.MaleCount = pr.MaleCount;
