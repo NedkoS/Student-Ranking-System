@@ -136,7 +136,7 @@ namespace StudentRanking.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            queryManager.Dispose();
+            queryManager.refresh();
             base.Dispose(disposing);
         }
 

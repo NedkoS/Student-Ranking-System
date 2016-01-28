@@ -207,9 +207,9 @@ namespace StudentRanking.Ranking
                     }
                 }
 
-            }
-            while (count > 0);
+            }while (count > 0);
 
+            onFinishListener();
         }
     }
 }
