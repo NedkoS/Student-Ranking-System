@@ -12,7 +12,7 @@ namespace StudentRanking.Ranking
 {
     public class Ranker
     {
-      
+
         private QueryManager queryManager;
 
         public Ranker()
@@ -30,76 +30,68 @@ namespace StudentRanking.Ranking
                 TotalGrade = 0
             };
 
-            lock (queryManager)
-            {
-                queryManager.addFacultyRankListItem(rejected);
-            }
+            queryManager.addFacultyRankListItem(rejected);
+
             try
             {
-            foreach (Preference preference in preferences)
-            {
-                int quota;
-                List<FacultyRankList> rankList;
-
-                lock (queryManager)
+                foreach (Preference preference in preferences)
                 {
+                    int quota;
+                    List<FacultyRankList> rankList;
+
                     quota = queryManager.getQuota(preference.ProgrammeName, (bool)student.Gender);
                     rankList = queryManager.getRankListData(preference.ProgrammeName, (bool)student.Gender);
-                }
-                double minimalGrade = 0;
-                double studentCount = rankList.Count;
 
-                if (rankList.Count != 0)
-                {
-                    minimalGrade = rankList.Min(list => list.TotalGrade);
-                }
+                    double minimalGrade = 0;
+                    double studentCount = rankList.Count;
 
-
-                if (preference.TotalGrade > minimalGrade &&
-                    studentCount >= quota &&
-                    ((quota >= 2 &&
-                    rankList[quota - 2].TotalGrade > minimalGrade) ||
-                    (quota == 1 &&
-                    rankList[quota - 1].TotalGrade > minimalGrade)
-                    ))
-                {
-
-                    var entries = rankList.Where(entry => entry.TotalGrade == minimalGrade);
-
-                    lock (queryManager)
+                    if (rankList.Count != 0)
                     {
-                        queryManager.removeFacultyRankListItems(entries);
+                        minimalGrade = rankList.Min(list => list.TotalGrade);
                     }
-                }
 
-                if ((preference.TotalGrade > 0 &&
-                    preference.TotalGrade >= minimalGrade) ||
-                    (preference.TotalGrade < minimalGrade &&
-                    studentCount < quota))
-                {
-                    FacultyRankList entry = new FacultyRankList()
-                        {
-                            EGN = preference.EGN,
-                            ProgrammeName = preference.ProgrammeName,
-                            TotalGrade = preference.TotalGrade
-                        };
 
-                    lock (queryManager)
+                    if (preference.TotalGrade > minimalGrade &&
+                        studentCount >= quota &&
+                        ((quota >= 2 &&
+                        rankList[quota - 2].TotalGrade > minimalGrade) ||
+                        (quota == 1 &&
+                        rankList[quota - 1].TotalGrade > minimalGrade)
+                        ))
                     {
+
+                        var entries = rankList.Where(entry => entry.TotalGrade == minimalGrade);
+
+
+                        queryManager.removeFacultyRankListItems(entries);
+
+                    }
+
+                    if ((preference.TotalGrade > 0 &&
+                        preference.TotalGrade >= minimalGrade) ||
+                        (preference.TotalGrade < minimalGrade &&
+                        studentCount < quota))
+                    {
+                        FacultyRankList entry = new FacultyRankList()
+                            {
+                                EGN = preference.EGN,
+                                ProgrammeName = preference.ProgrammeName,
+                                TotalGrade = preference.TotalGrade
+                            };
+
+
                         queryManager.addFacultyRankListItem(entry);
                         queryManager.removeFacultyRankListItem(rejected);
-                    }
-                    break;
-                }
 
-            }
+                        break;
+                    }
+
+                }
             }
             catch (Exception e)
             {
-                lock (queryManager)
-                {
-                    queryManager.removeFacultyRankListItem(rejected);
-                }
+                queryManager.removeFacultyRankListItem(rejected);
+
                 throw e;
             }
         }
@@ -130,10 +122,9 @@ namespace StudentRanking.Ranking
         {
             //handle preferences
             List<Preference> preferences;
-            lock(queryManager)
-            {
-                preferences = queryManager.getStudentPreferencesByFaculty(student.EGN, facultyName);
-            }
+
+            preferences = queryManager.getStudentPreferencesByFaculty(student.EGN, facultyName);
+
 
             //handle grading
             Grader grader = new Grader();
@@ -161,7 +152,7 @@ namespace StudentRanking.Ranking
             List<Student> students = new List<Student>();
 
             List<String> facultyNames = queryManager.getFacultyNames();
-            
+
 
             //if we try to rate for a second time we should clear the rejected students and
             //those who did not enroll
@@ -176,7 +167,7 @@ namespace StudentRanking.Ranking
                 tasks.Add(facultyTask);
             }
 
-            foreach(Task task in tasks)
+            foreach (Task task in tasks)
             {
                 await task;
             }
@@ -190,11 +181,8 @@ namespace StudentRanking.Ranking
 
             List<String> studentEGNs;
             int count;
+            studentEGNs = queryManager.getStudentEGNs(facultyName);
 
-            lock (queryManager)
-            {
-                studentEGNs = queryManager.getStudentEGNs(facultyName);
-            }
             //this while cycle is used to match any remaining students rejected
             //in previous iterations
             do
@@ -206,11 +194,10 @@ namespace StudentRanking.Ranking
                     Student student;
                     bool isApproved;
 
-                    lock (queryManager)
-                    {
-                        student = queryManager.getStudent(EGN);
-                        isApproved = queryManager.getApprovedStudentsEGNs(facultyName).Contains(EGN);
-                    }
+
+                    student = queryManager.getStudent(EGN);
+                    isApproved = queryManager.getApprovedStudentsEGNs(facultyName).Contains(EGN);
+
 
                     //if the student is already approved for a programme, skip him/her
                     if (!isApproved)
@@ -222,7 +209,7 @@ namespace StudentRanking.Ranking
 
             }
             while (count > 0);
-            
+
         }
     }
 }

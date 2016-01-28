@@ -20,6 +20,16 @@ namespace StudentRanking.Ranking
             
         }
 
+        private void lockManager()
+        {
+            Monitor.Enter(this);
+        }
+
+        private void unlockManager()
+        {
+            Monitor.Exit(this);
+        }
+
         public void setContext(UsersContext context)
         {
             this.context = context;
@@ -32,6 +42,7 @@ namespace StudentRanking.Ranking
 
         public void deleteRankingData()
         {
+            lockManager();
             var entriesToDelete = from student in context.Students
                                   from entry in context.FacultyRankLists
                                   where entry.EGN == student.EGN
@@ -45,40 +56,55 @@ namespace StudentRanking.Ranking
             }
 
             context.SaveChanges();
+            unlockManager();
         }
 
         public void addUser(String userName)
         {
+            lockManager();
             context.UserProfiles.Add(new UserProfile { UserName = userName });
             context.SaveChanges();
+            unlockManager();
         }
 
         public UserProfile getUser(String userName)
         {
-            return context.UserProfiles.FirstOrDefault(u => u.UserName.ToLower() == userName.ToLower());
+            lockManager();
+            UserProfile result = context.UserProfiles.FirstOrDefault(u => u.UserName.ToLower() == userName.ToLower());
+            unlockManager();
+            return result;
         }
 
         public List<RankingDates> getRankingDatesContent()
         {
-            return context.Dates.ToList();
+            lockManager();
+            List<RankingDates> result = context.Dates.ToList();
+            unlockManager();
+
+            return result;
         }
 
         public void addRankingDatesContent(RankingDates content)
         {
+            lockManager();
             context.Dates.Add(content);
             context.SaveChanges();
+            unlockManager();
         }
 
         public void removeRankingDates(RankingDates dates)
         {
+            lockManager();
             context.Dates.Attach(dates);
             context.Dates.Remove(dates);
             context.SaveChanges();
+            unlockManager();
         }
 
         //Returns a list of preferences of a student by SSN
         public List<Preference> getStudentPreferences(String EGN)
         {
+            lockManager();
             List<Preference> preferences = new List<Preference>();
 
             var query = from pref in context.Preferences
@@ -86,23 +112,28 @@ namespace StudentRanking.Ranking
                         select pref;
 
             preferences = query.ToList();
-
+            unlockManager();
             return preferences;
         }
 
         public List<String> getApprovedStudentsEGNs(String facultyName)
         {
+            lockManager();
             var getApprovedStudentsEGNQuery = (from entry in context.FacultyRankLists
                                                from faculty in context.Faculties
                                                where faculty.FacultyName == facultyName
                                                where entry.ProgrammeName == faculty.ProgrammeName || (entry.ProgrammeName.Equals(CONST_REJECTED + " " + faculty.FacultyName))
                                                select entry.EGN).Distinct();
 
-            return getApprovedStudentsEGNQuery.ToList();
+            List<String> result =  getApprovedStudentsEGNQuery.ToList();
+            unlockManager();
+
+            return result;
         }
 
         public List<String> getStudentEGNs(String facultyName)
         {
+            lockManager();
             var getStudentsEGNQuery = (from student in context.Students
                                        from preference in context.Preferences
                                        from faculty in context.Faculties
@@ -112,12 +143,15 @@ namespace StudentRanking.Ranking
                                             preference.EGN == student.EGN
                                        select student.EGN).Distinct();
 
-            return getStudentsEGNQuery.ToList();
+            List<String> result = getStudentsEGNQuery.ToList();
+            unlockManager();
+            return result;
         }
 
         //Returns a list of preferences of a student by SSN
         public List<Preference> getStudentPreferencesByFaculty(String EGN, String facultyName)
         {
+            lockManager();
             List<Preference> preferences = new List<Preference>();
 
             var query = from pref in context.Preferences
@@ -127,48 +161,59 @@ namespace StudentRanking.Ranking
                         select pref;
 
             preferences = query.ToList();
-
+            unlockManager();
             return preferences;
         }
 
         public List<String> getFacultyNames()
         {
+            lockManager();
             var getFacultyNames = (from faculty in context.Faculties
                                    select faculty.FacultyName).Distinct();
 
-            return getFacultyNames.ToList();
+            List<String> result = getFacultyNames.ToList();
+            unlockManager();
+            return result;
         }
 
         public void removeFacultyRankListItem(FacultyRankList item)
         {
+            lockManager();
             context.FacultyRankLists.Attach(item);
             context.FacultyRankLists.Remove(item);
             context.SaveChanges();
+            unlockManager();
         }
 
         public void removeFacultyRankListItems(IEnumerable<FacultyRankList> entries)
         {
+            lockManager();
             foreach (FacultyRankList entry in entries)
             {
                 context.FacultyRankLists.Attach(entry);
                 context.FacultyRankLists.Remove(entry);
             }
             context.SaveChanges();
+            unlockManager();
         }
 
         //get male/female student count allowed for a programme
         public int getQuota(String programmeName, bool gender)
         {
+            lockManager();
             var query = from rules in context.ProgrammesRules
                         where rules.ProgrammeName == programmeName
                         select gender ? rules.MaleCount : rules.FemaleCount;
 
-            return query.First();
+            int result = query.First();
+            unlockManager();
+            return result;
         }
 
         //get formulas components organized in a list
         public List<List<String>> getFormulasComponents(String programmeName)
         {
+            lockManager();
             List<List<String>> allComponents = new List<List<string>>();
             List<String> components = new List<string>();
 
@@ -206,12 +251,15 @@ namespace StudentRanking.Ranking
                 components = new List<string>();
             }
 
-            return allComponents;
+            List<List<String>> result = allComponents;
+            unlockManager();
+            return result;
         }
 
         //get the grades of a student wit a given SSN
         public List<Exam> getStudentGradesList(String studentEGN)
         {
+            lockManager();
             List<Exam> grades = new List<Exam>();
 
             var query = from grade in context.Exams
@@ -223,12 +271,15 @@ namespace StudentRanking.Ranking
                 grades.Add(grade);
             }
 
-            return grades;
+            List<Exam> result = grades;
+            unlockManager();
+            return result;
         }
 
         //get a dictionary with keys - the exam names, and grades as values
         public Dictionary<String, double> getStudentGrades(String studentEGN)
         {
+            lockManager();
             Dictionary<String, double> grades = new Dictionary<String, double>();
 
             var query = from grade in context.Exams
@@ -240,28 +291,38 @@ namespace StudentRanking.Ranking
                 grades.Add(grade.ExamName, grade.Grade);
             }
 
-            return grades;
+            Dictionary<String, double> result = grades;
+            unlockManager();
+            return result;
         }
 
         public void addPreference(Preference preference)
         {
+            lockManager();
             context.Preferences.Attach(preference);
             context.Entry(preference).Property(x => x.TotalGrade).IsModified = true;
             context.SaveChanges();
+            unlockManager();
         }
 
         public void addFacultyRankListItem(FacultyRankList item)
         {
+            lockManager();
             context.FacultyRankLists.Add(item);
             context.SaveChanges();
+            unlockManager();
         }
         public Student getStudent(String EGN)
         {
-            return context.Students.Where(student => student.EGN == EGN).First();
+            lockManager();
+            Student result =  context.Students.Where(student => student.EGN == EGN).First();
+            unlockManager();
+            return result;
         }
 
         public List<FacultyRankList> getRankList(String programmeName)
         {
+            lockManager();
             List<FacultyRankList> rankList = new List<FacultyRankList>();
             var query = from rankEntry in context.FacultyRankLists
                         where rankEntry.ProgrammeName == programmeName
@@ -271,12 +332,15 @@ namespace StudentRanking.Ranking
             foreach (FacultyRankList entry in query)
                 rankList.Add(entry);
 
-            return rankList;
+            List<FacultyRankList> result =  rankList;
+            unlockManager();
+            return result;
         }
 
 
         public List<FacultyRankList> getStudentRankList(String EGN)
         {
+            lockManager();
             List<FacultyRankList> rankList = new List<FacultyRankList>();
             var query = from rankEntry in context.FacultyRankLists
                         where rankEntry.EGN == EGN
@@ -285,11 +349,14 @@ namespace StudentRanking.Ranking
             foreach (FacultyRankList entry in query)
                 rankList.Add(entry);
 
-            return rankList;
+            List<FacultyRankList> result =  rankList;
+            unlockManager();
+            return result;
         }
 
         public List<FacultyRankList> getRankListData(String programmeName, Boolean gender)
         {
+            lockManager();
             List<FacultyRankList> result = new List<FacultyRankList>();
 
             var query = from rankEntry in context.FacultyRankLists
@@ -308,156 +375,212 @@ namespace StudentRanking.Ranking
                 if (genderCheck.Contains(entry.EGN))
                     result.Add(entry);
             }
-
+            unlockManager();
             return result;
         }
 
 
         public RankingDates getCampaignDates()
         {
+            lockManager();
             if ( context.Dates.ToList().Count() != 0 )
             {
-                return context.Dates.ToList().First();
+                RankingDates result = context.Dates.ToList().First();
+                unlockManager();
+                return result;
 
             }
-
+            unlockManager();
             return new RankingDates();
         }
 
         public List<Exam> getExamsOfStudent(String EGN)
         {
+            lockManager();
             var exams = from exam in context.Exams
                         where exam.StudentEGN == EGN
                         select exam;
 
-            return exams.ToList();
+            List<Exam> result = exams.ToList();
+            unlockManager();
+            return result;
         }
 
         public Exam findExamOfStudent(String examName, String EGN)
         {
-            return context.Exams.Find(examName, EGN);
+            lockManager();
+            Exam result = context.Exams.Find(examName, EGN);
+            unlockManager();
+            return result;
         }
 
         public List<String> getExamNames()
         {
+            lockManager();
             var examsNames = from exam in context.ExamNames
                              select exam.Name;
 
-            return examsNames.ToList();
+            List<String> result = examsNames.ToList();
+            unlockManager();
+            return result;
         }
 
         public void addExam(Exam exam)
         {
+            lockManager();
             context.Exams.Add(exam);
             context.SaveChanges();
+            unlockManager();
         }
 
         public void setExamState(Exam exam, EntityState state)
         {
+            lockManager();
             context.Entry(exam).State = state;
             context.SaveChanges();
+            unlockManager();
         }
 
         public void removeExam(Exam exam)
         {
+            lockManager();
             context.Exams.Remove(exam);
             context.SaveChanges();
+            unlockManager();
         }
 
         public List<Faculty> getFaculties()
         {
-            return context.Faculties.ToList();
+            lockManager();
+            List<Faculty> result =  context.Faculties.ToList();
+            unlockManager();
+            return result;
         }
 
         public void setDatesState(RankingDates dates, EntityState state)
         {
+            lockManager();
             context.Entry(dates).State = state;
             context.SaveChanges();
+            unlockManager();
         }
 
         public ProgrammeRules findProgrammeRule(String programmeName)
         {
-            return context.ProgrammesRules.Find(programmeName);
+            lockManager();
+            ProgrammeRules result = context.ProgrammesRules.Find(programmeName);
+            unlockManager();
+            return result;
         }
 
         public void addProgrammeRule(ProgrammeRules rule)
         {
+            lockManager();
             context.ProgrammesRules.Add(rule);
             context.SaveChanges();
+            unlockManager();
         }
 
         public void setProgrammeRuleState(ProgrammeRules rule, EntityState state)
         {
+            lockManager();
             context.Entry(rule).State = state;
             context.SaveChanges();
+            unlockManager();
         }
 
         public List<Formula> getProgrammeFormulae(String programmeName)
         {
+            lockManager();
             var query = from formula in context.Formulas
                         where formula.ProgrammeName == programmeName
                         select formula;
 
-            return query.ToList();
+             List<Formula> result = query.ToList();
+             unlockManager();
+             return result;
         }
 
         public List<Student> getStudents()
         {
-            return context.Students.ToList();
+            lockManager();
+            List<Student> result = context.Students.ToList();
+            unlockManager();
+            return result;
         }
 
         public void addStudent(Student student)
         {
+            lockManager();
             context.Students.Add(student);
             context.SaveChanges();
+            unlockManager();
 
         }
 
         public void setStudentState(Student student, EntityState state)
         {
+            lockManager();
             context.Entry(student).State = state;
             context.SaveChanges();
+            unlockManager();
         }
 
         public void removeStudent(Student student)
         {
+            lockManager();
             context.Students.Remove(student);
             context.SaveChanges();
+            unlockManager();
         }
 
         public Student findStudent(String id)
         {
-            return context.Students.Find(id);
+            lockManager();
+            Student result= context.Students.Find(id);
+            unlockManager();
+            return result;
         }
 
         public Faculty getFaculty(String programmeName)
         {
-            return context.Faculties.Find(programmeName);
+            lockManager();
+            Faculty result = context.Faculties.Find(programmeName);
+            unlockManager();
+            return result;
         }
 
         public void removePreference(Preference preference)
         {
+            lockManager();
             context.Preferences.Attach(preference);
             context.Preferences.Remove(preference);
             context.SaveChanges();
+            unlockManager();
         }
 
         public List<String> getProgrammeNames(String facultyName)
         {
+            lockManager();
             var query = from b in context.Faculties
                     where b.FacultyName == facultyName
                     select b.ProgrammeName;
 
-            return query.ToList();
+            List<String> result = query.ToList();
+            unlockManager();
+            return result;
         }
 
         public int getPrefNumber(String EGN, String programmeName)
         {
+            lockManager();
              var prefNumber = from pref in context.Preferences
                 where pref.EGN == EGN && pref.ProgrammeName == programmeName
                 select pref.PrefNumber;
 
-            return prefNumber.First();
+            int result = prefNumber.First();
+            unlockManager();
+            return result;
         }
 
         public void Dispose()

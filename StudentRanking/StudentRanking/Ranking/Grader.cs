@@ -30,7 +30,7 @@ namespace StudentRanking.Ranking
             {
                 for (int componentInd = 1; componentInd < formulas[formulaInd].Count; componentInd += 2)
                 {
-                    if (formulas[formulaInd][componentInd].ToLower().Contains(MATRICULARITY_EXAM) && 
+                    if (formulas[formulaInd][componentInd].ToLower().Contains(MATRICULARITY_EXAM) &&
                         grades.TryGetValue(formulas[formulaInd][componentInd], out value))
                     {
                         String matricularityExam = formulas[formulaInd][componentInd].ToLower().Replace(MATRICULARITY_EXAM, String.Empty);
@@ -62,10 +62,9 @@ namespace StudentRanking.Ranking
             //TODO: return formulas applicable for this student
 
             List<List<String>> formulas;
-            lock(queryManager)
-            {
-                formulas = queryManager.getFormulasComponents(programmeName);
-            }
+
+            formulas = queryManager.getFormulasComponents(programmeName);
+
             double totalGrade = 0;
             double maxGrade = 0;
 
@@ -115,21 +114,19 @@ namespace StudentRanking.Ranking
 
         public void grade(String studentEGN, List<Preference> preferences)
         {
-            lock (queryManager)
-            {
-                grades = queryManager.getStudentGrades(studentEGN);
-            }
+
+            grades = queryManager.getStudentGrades(studentEGN);
+
 
             //TODO: Should we check for exams with the same name but different date?
 
             foreach (Preference preference in preferences)
             {
                 preference.TotalGrade = calculateTotalGrade(studentEGN, preference.ProgrammeName);
-                lock(queryManager)
-                {
-                    //add total grade in preference table
-                    queryManager.addPreference(preference);
-                }
+
+                //add total grade in preference table
+                queryManager.addPreference(preference);
+
             }
         }
     }
