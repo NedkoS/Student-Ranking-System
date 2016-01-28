@@ -1,4 +1,4 @@
-﻿using StudentRanking.DataAccess;
+﻿
 using StudentRanking.Models;
 using System;
 using System.Collections.Generic;
@@ -41,7 +41,9 @@ namespace StudentRanking.Ranking
             return queryManager;
         }
 
-        public void deleteRankingData()
+        //Clearing the rejected students and
+        //those who did not enroll
+        public void filterRankingData()
         {
             lockManager();
             var entriesToDelete = from student in context.Students

@@ -1,5 +1,4 @@
 ﻿using StudentRanking.App_Start;
-using StudentRanking.DataAccess;
 using StudentRanking.Ranking;
 using System;
 using System.Collections.Generic;

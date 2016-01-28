@@ -1,7 +1,7 @@
-﻿@model IEnumerable<StudentRanking.DataAccess.FacultyRankList>
+﻿@model IEnumerable<StudentRanking.Models.FacultyRankList>
 @{
     ViewBag.Title = "FacultyRankList";
-    var res = ViewData["result"] as List<StudentRanking.DataAccess.FacultyRankList>;
+    var res = ViewData["result"] as List<StudentRanking.Models.FacultyRankList>;
     bool isMainAdmin = (bool)ViewData["mainAdmin"];
     
     bool isFirstRankListPublished = (bool)ViewData["isFirstRankListPublished"];

@@ -1,4 +1,4 @@
-﻿using StudentRanking.DataAccess;
+﻿
 using StudentRanking.Ranking;
 using System;
 using System.Collections.Generic;

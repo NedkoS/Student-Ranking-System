@@ -196,19 +196,19 @@
     <Compile Include="Controllers\StudentBrowseController.cs" />
     <Compile Include="Controllers\StudentPreferencesController.cs" />
     <Compile Include="Controllers\StudentRankingInformationController.cs" />
-    <Compile Include="DataAccess\RankingDates.cs" />
+    <Compile Include="Models\RankingDates.cs" />
     <Compile Include="Filters\IndexAttribute.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="DataAccess\AccountModels.cs" />
-    <Compile Include="DataAccess\AdminModels.cs" />
-    <Compile Include="DataAccess\Exam.cs" />
-    <Compile Include="DataAccess\ExamName.cs" />
-    <Compile Include="DataAccess\Faculty.cs" />
-    <Compile Include="DataAccess\FacultyRankList.cs" />
-    <Compile Include="DataAccess\Formula.cs" />
+    <Compile Include="Models\AccountModels.cs" />
+    <Compile Include="Models\AdminModels.cs" />
+    <Compile Include="Models\Exam.cs" />
+    <Compile Include="Models\ExamName.cs" />
+    <Compile Include="Models\Faculty.cs" />
+    <Compile Include="Models\FacultyRankList.cs" />
+    <Compile Include="Models\Formula.cs" />
     <Compile Include="Migrations\201601241059035_Init.cs" />
     <Compile Include="Migrations\201601241059035_Init.Designer.cs">
       <DependentUpon>201601241059035_Init.cs</DependentUpon>
@@ -217,12 +217,12 @@
     <Compile Include="Models\CampaignRankingDates.cs" />
     <Compile Include="Models\StringToDatesConverter.cs" />
     <Compile Include="Ranking\Grader.cs" />
-    <Compile Include="DataAccess\Preference.cs" />
-    <Compile Include="DataAccess\ProgrammeProperties.cs" />
-    <Compile Include="DataAccess\ProgrammeRules.cs" />
+    <Compile Include="Models\Preference.cs" />
+    <Compile Include="Models\ProgrammeProperties.cs" />
+    <Compile Include="Models\ProgrammeRules.cs" />
     <Compile Include="Ranking\QueryManager.cs" />
     <Compile Include="Ranking\Ranker.cs" />
-    <Compile Include="DataAccess\Student.cs" />
+    <Compile Include="Models\Student.cs" />
     <Compile Include="Models\StudentPreferences.cs" />
     <Compile Include="Models\StudentRankingInformation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

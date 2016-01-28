@@ -6,7 +6,6 @@ using System.Web.Mvc;
 using WebMatrix.WebData;
 using StudentRanking.Models;
 using StudentRanking.App_Start;
-using StudentRanking.DataAccess;
 
 namespace StudentRanking.Filters
 {

@@ -1,4 +1,4 @@
-﻿using StudentRanking.DataAccess;
+﻿
 using StudentRanking.Models;
 using System;
 using System.Collections;
@@ -156,9 +156,8 @@ namespace StudentRanking.Ranking
 
             //if we try to rate for a second time we should clear the rejected students and
             //those who did not enroll
+            queryManager.filterRankingData();
 
-
-            queryManager.deleteRankingData();
             List<Task> tasks = new List<Task>();
             //iterate through every faculty
             foreach (String facultyName in facultyNames)

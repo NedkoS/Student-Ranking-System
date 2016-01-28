@@ -10,7 +10,6 @@ using Microsoft.Web.WebPages.OAuth;
 using WebMatrix.WebData;
 using StudentRanking.Filters;
 using StudentRanking.Models;
-using StudentRanking.DataAccess;
 using System.Configuration;
 using StudentRanking.Ranking;
 

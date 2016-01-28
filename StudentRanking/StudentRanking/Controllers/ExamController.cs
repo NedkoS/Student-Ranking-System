@@ -6,7 +6,6 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using StudentRanking.Models;
-using StudentRanking.DataAccess;
 using StudentRanking.Ranking;
 
 
