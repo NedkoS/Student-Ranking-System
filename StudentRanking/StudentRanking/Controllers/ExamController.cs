@@ -22,12 +22,19 @@ namespace StudentRanking.Controllers
 
         public ActionResult Index()
         {
-            return View( new List<Exam>());
+            ViewBag.isStudent = true;
+            return View(new List<Exam>());
         }
         [HttpPost]
         public ActionResult Index(String egn)
         {
-
+            ViewBag.isStudent = true;
+            Student student = queryManager.findStudent(egn);
+            if (student == null)
+            {
+                ViewBag.isStudent = false;
+            }
+            
             return PartialView("_StudentExamsGrades", queryManager.getExamsOfStudent(egn));
         }
 

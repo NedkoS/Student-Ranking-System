@@ -25,7 +25,6 @@ namespace StudentRanking.Controllers
 
         public ActionResult Index(String egn = "")
         {
-
             //Ranker ranker = new Ranker(db);
             //ranker.start();
 
@@ -50,10 +49,19 @@ namespace StudentRanking.Controllers
 
             //System.IO.File.WriteAllText(@"D:\WriteText.txt", text);
             
+            Student student = queryManager.findStudent(egn);
+
             if (egn == "")
+            {
+                ViewBag.isInitial = true;
                 return View(queryManager.getStudents());
-            else
-                return Details(egn);
+            } else if (student == null)
+            {
+                ViewBag.isInitial = false;
+                ViewBag.isStudent = false;
+                return View(queryManager.getStudents());
+            }
+            else return Details(egn);
         }
 
         //
@@ -75,8 +83,10 @@ namespace StudentRanking.Controllers
             Student student = queryManager.findStudent(id);
             if (student == null)
             {
-                return HttpNotFound();
+                return RedirectToAction("Index", "StudentBrowse", new { egn = id });
             }
+
+            ViewBag.isStudent = true;
             return View(student);
         }
 

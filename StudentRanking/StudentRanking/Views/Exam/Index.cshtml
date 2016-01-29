@@ -26,13 +26,6 @@
     </script>
 }
 
-
-
-
-@{
-    ViewBag.Title = "Index";
-}
-
 <style>
     table, th, td {
         border: 0px solid black;
@@ -44,6 +37,9 @@
     }
 </style>
 
+@{
+    ViewBag.Title = "Index";
+}
 
 <p>
     @Html.ActionLink("Добавяне на оценка", "Create")
@@ -56,38 +52,3 @@
 <div id="resultTable">
     @Html.Partial("_StudentExamsGrades", Model)
 </div>
-
-@*<table>
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.StudentEGN)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ExamName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Grade)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.StudentEGN)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ExamName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Grade)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { examName = item.ExamName, studentEGN = item.StudentEGN  }) |
-            @Html.ActionLink("Details", "Details", new { examName = item.ExamName, studentEGN = item.StudentEGN }) |
-            @Html.ActionLink("Delete", "Delete", new { examName = item.ExamName, studentEGN = item.StudentEGN })
-        </td>
-    </tr>
-}
-
-</table>*@

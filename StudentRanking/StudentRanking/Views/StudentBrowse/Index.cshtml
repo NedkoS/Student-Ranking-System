@@ -24,6 +24,10 @@
 {
     @Html.TextBox("id")
     <input type="submit" value="Търсене" />
+    if (!ViewBag.isInitial && !ViewBag.isStudent)
+    {
+        <div class="message-error">Няма такъв студент.</div>
+    }
 }
 
         <p>
