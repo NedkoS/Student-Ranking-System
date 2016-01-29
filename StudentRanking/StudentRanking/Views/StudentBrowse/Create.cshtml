@@ -34,7 +34,7 @@
             <label>ЕГН</label>
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.EGN)
+            @Html.TextBoxFor(model => model.EGN, new { maxlength = 10, @type = "number", minlength = 10 })
             @Html.ValidationMessageFor(model => model.EGN)
         </div>
 
@@ -42,7 +42,7 @@
             <label>Имейл</label>
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.Email)
+            @Html.TextBoxFor(model => model.Email, new { @type = "email" })
             @Html.ValidationMessageFor(model => model.Email)
         </div>
 

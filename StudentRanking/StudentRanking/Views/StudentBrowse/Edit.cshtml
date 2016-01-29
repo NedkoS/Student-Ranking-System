@@ -42,7 +42,7 @@
             <label>Имейл</label>
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.Email)
+            @Html.TextBoxFor(m => m.Email, new { @type = "email" })
             @Html.ValidationMessageFor(model => model.Email)
         </div>
 
