@@ -382,6 +382,18 @@ namespace StudentRanking.Ranking
             return result;
         }
 
+        //public String getStudentName(String EGN)
+        //{
+        //    lockManager();
+
+        //    var student = from s in context.Students
+        //                  where s.EGN == EGN
+        //                  select s;
+        //    var result = student.ToList().First();
+        //    unlockManager();
+        //    return result.FirstName + " " + result.LastName;
+
+        //}
 
         public RankingDates getCampaignDates()
         {

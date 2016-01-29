@@ -115,11 +115,11 @@ namespace StudentRanking.Controllers
                 String pass = ViewBag.Password;
                 WebSecurity.CreateUserAndAccount(student.EGN, ViewBag.Password);
 
-                var body = "<p>Email From: {0} ({1})</p><p>Message:</p><p>{2}</p>";
+                var body = "<p>Съобщение от: {0}</p></br><p> Вие сте регистриран в системата за класиране на кандидат-студенти. </br> Вашето потребителско име е ЕГН-то Ви, а паролата :</p><p><strong>{2}</strong></p>";
                 MailMessage mail = new MailMessage();
                 mail.To.Add(new MailAddress(student.Email));
                 mail.From = new MailAddress("mailsender39@gmail.com");
-                mail.Subject = "Your email subject";
+                mail.Subject ="Created profile in Student Ranking System";
                 mail.Body = string.Format(body, "admin",
                                                    "mailsender39@gmail.com", newPassword); ;
                 mail.IsBodyHtml = true;
