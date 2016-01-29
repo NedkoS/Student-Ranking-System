@@ -72,11 +72,9 @@
                 </td>
                 <td>
                     <label>@(((bool)item.Gender)?"Мъж":"Жена")</label>
-                    <!--Html.DisplayFor(modelItem => ((bool)item.Gender)? "Male" : "Female")-->
                 </td>
                 <td>
                     <label>@(((bool)item.IsEnrolled) ? "Да" : "Не")</label>
-                   <!-- Html.DisplayFor(modelItem => item.IsEnrolled)-->
                 </td>
                 <td>
                     @Html.ActionLink("Редактиране", "Edit", new { id=item.EGN }) |
