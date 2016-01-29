@@ -6,9 +6,9 @@
 }
 
 <div id="resultTable">
-    <table>
-        @if (Model.Count() != 0)
-        {
+    @if (Model.Count() != 0)
+    {
+        <table>
             <tr>
                 <th>
                     <label>Номер</label>
@@ -23,7 +23,7 @@
             </tr>
 
 
-            foreach (var item in Model.OrderByDescending(item => item.TotalGrade))
+            @foreach (var item in Model.OrderByDescending(item => item.TotalGrade))
             {
                 <tr>
                     <td>
@@ -40,13 +40,13 @@
                     </td>
                 </tr>
                 i++;
-            }
-        }
-        else
-        {
-            <div style="color:purple">
-                <strong>Няма класирани студенти.</strong>
-            </div>
-        }
-    </table>
+            }   
+        </table>
+    }
+    else if (ViewBag.isSubmit != null && ViewBag.isSubmit)
+    {
+        <div style="color:purple">
+            <strong>Няма класирани студенти.</strong>
+        </div>
+    }
 </div>
