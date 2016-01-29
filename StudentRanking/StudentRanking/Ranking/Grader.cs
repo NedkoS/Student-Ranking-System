@@ -125,7 +125,7 @@ namespace StudentRanking.Ranking
                 preference.TotalGrade = calculateTotalGrade(studentEGN, preference.ProgrammeName);
 
                 //add total grade in preference table
-                queryManager.addPreference(preference);
+                queryManager.editPreference(preference);
 
             }
         }

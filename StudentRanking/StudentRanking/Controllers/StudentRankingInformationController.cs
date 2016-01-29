@@ -49,6 +49,30 @@ namespace StudentRanking.Models
 
             ViewData["enrolledProgramme"] = "";
             ViewData["faculty"] = "";
+
+            QueryManager mng = QueryManager.getInstance();
+
+            // класиране първи етап - дати
+            ViewData["isFirstRankListPublished"] = false;
+            if (mng.getRankingDatesContent().Count != 0 && mng.getRankingDatesContent().Last().FirstRankingDate == "true")
+            {
+                ViewData["isFirstRankListPublished"] = true;
+            }
+
+
+            // класиране втори етап - дати
+            ViewData["isSecondRankListPublished"] = false;
+            if (mng.getRankingDatesContent().Count != 0 && mng.getRankingDatesContent().Last().FirstRankingDate == "true")
+            {
+                ViewData["isSecondRankListPublished"] = true;
+            }
+
+            // класиране трети етап - дати
+            ViewData["isThirdRankListPublished"] = false;
+            if (mng.getRankingDatesContent().Count != 0 && mng.getRankingDatesContent().Last().FirstRankingDate == "true")
+            {
+                ViewData["isThirdRankListPublished"] = true;
+            }
             if (isEnrolled)
             {
                 ViewData["isRankListPublished"] = true;
@@ -81,32 +105,6 @@ namespace StudentRanking.Models
             //{
             //    ViewData["isRankListPublished"] = true;
             //}
-
-
-
-            QueryManager mng = QueryManager.getInstance();
-
-            // класиране първи етап - дати
-            ViewData["isFirstRankListPublished"] = false;
-            if (mng.getRankingDatesContent().Count != 0 && mng.getRankingDatesContent().Last().FirstRankingDate == "true")
-            {
-                ViewData["isFirstRankListPublished"] = true;
-            }
-
-
-            // класиране втори етап - дати
-            ViewData["isSecondRankListPublished"] = false;
-            if (mng.getRankingDatesContent().Count != 0 && mng.getRankingDatesContent().Last().FirstRankingDate == "true")
-            {
-                ViewData["isSecondRankListPublished"] = true;
-            }
-
-            // класиране трети етап - дати
-            ViewData["isThirdRankListPublished"] = false;
-            if (mng.getRankingDatesContent().Count != 0 && mng.getRankingDatesContent().Last().FirstRankingDate == "true")
-            {
-                ViewData["isThirdRankListPublished"] = true;
-            }
 
             List<String> studentProgrammes = new List<String>();
             foreach (var item in studentRankList)

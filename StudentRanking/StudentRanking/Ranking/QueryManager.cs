@@ -369,6 +369,19 @@ namespace StudentRanking.Ranking
         public void addPreference(Preference preference)
         {
             lockManager();
+            if (context.Preferences.Any(pref => pref.EGN.Equals(preference.EGN) && pref.ProgrammeName.Equals(preference.ProgrammeName)))
+            {
+                unlockManager();
+                return;
+            }
+            context.Preferences.Add(preference);
+            context.SaveChanges();
+            unlockManager();
+        }
+
+        public void editPreference(Preference preference)
+        {
+            lockManager();
             context.Preferences.Attach(preference);
             context.Entry(preference).Property(x => x.TotalGrade).IsModified = true;
             context.SaveChanges();
@@ -420,6 +433,31 @@ namespace StudentRanking.Ranking
                 rankList.Add(entry);
 
             List<FacultyRankList> result =  rankList;
+            unlockManager();
+            return result;
+        }
+
+        public List<FacultyRankList> getUnenrolledRankListData(String programmeName, Boolean gender)
+        {
+            lockManager();
+            List<FacultyRankList> result = new List<FacultyRankList>();
+
+            var query = from rankEntry in context.FacultyRankLists
+                        where rankEntry.ProgrammeName == programmeName
+                        orderby rankEntry.TotalGrade ascending
+                        select rankEntry;
+
+            var genderCheck = from student in context.Students
+                              where student.Gender == gender && student.IsEnrolled == true
+                              select student.EGN;
+
+            List<FacultyRankList> temp = query.ToList();
+
+            foreach (FacultyRankList entry in temp)
+            {
+                if (genderCheck.Contains(entry.EGN))
+                    result.Add(entry);
+            }
             unlockManager();
             return result;
         }
@@ -611,6 +649,7 @@ namespace StudentRanking.Ranking
         public void removeStudent(Student student)
         {
             lockManager();
+            context.Students.Attach(student);
             context.Students.Remove(student);
             context.SaveChanges();
             unlockManager();

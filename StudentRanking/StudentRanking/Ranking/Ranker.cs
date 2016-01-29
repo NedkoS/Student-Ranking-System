@@ -59,12 +59,8 @@ namespace StudentRanking.Ranking
                         rankList[quota - 1].TotalGrade > minimalGrade)
                         ))
                     {
-
                         var entries = rankList.Where(entry => entry.TotalGrade == minimalGrade);
-
-
                         queryManager.removeFacultyRankListItems(entries);
-
                     }
 
                     if ((preference.TotalGrade > 0 &&
@@ -155,7 +151,7 @@ namespace StudentRanking.Ranking
 
             //if we try to rate for a second time we should clear the rejected students and
             //those who did not enroll
-            queryManager.setupIgnoredStudents();
+            //queryManager.setupIgnoredStudents();
             queryManager.filterRankingData();
             List<String> ignoreList = queryManager.getIgnoredStudents();
 
