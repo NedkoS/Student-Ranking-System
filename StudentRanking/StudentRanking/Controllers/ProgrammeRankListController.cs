@@ -19,6 +19,8 @@ namespace StudentRanking.Controllers
         private QueryManager queryManager = QueryManager.getInstance();
         private Dictionary<String, List<String>> programmes = new Dictionary<String, List<String>>();
         private List<FacultyRankList> model = new List<FacultyRankList>();
+        private bool isRankerWorking = false;
+
         //
 
 
@@ -238,16 +240,19 @@ namespace StudentRanking.Controllers
 
         public void onAlgoFinished()
         {
-            ViewBag.isReady = true;
+
         }
 
         [HttpPost]
         public async Task<ActionResult> algoStart()
         {
             //Algo start
+            if (isRankerWorking)
+                return new EmptyResult();
+
+            isRankerWorking = true;
             Ranker ranker = new Ranker();
             ranker.setOnFinishListener(onAlgoFinished);
-            ViewBag.isReady = false;
 
             RankingDates dates = queryManager.getRankingDatesContent().Last();
 
@@ -277,10 +282,10 @@ namespace StudentRanking.Controllers
 
             await ranker.start();
             //ThreadPool.QueueUserWorkItem(o => ranker.start()); 
-            
 
             //return RedirectToAction("Index", "StudentRankingInformation");
             var redirectUrl = new UrlHelper(Request.RequestContext).Action("Index", "ProgrammeRankList");
+            isRankerWorking = false;
             return Json(new { Url = redirectUrl });
         }
 
