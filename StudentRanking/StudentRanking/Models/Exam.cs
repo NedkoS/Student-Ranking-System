@@ -11,12 +11,15 @@ namespace StudentRanking.Models
     {
         [Required]
         [Key][Column(Order=0)]
+        [Display(Name = "Изпит")]
         public String ExamName{ get; set; }
         [Key][Column(Order = 1)]
         [Required]
+        [Display(Name = "ЕГН")]
         public String StudentEGN{ get; set; }
 
         [Required]
+        [Display(Name = "Оценка")]
         public double Grade{ get; set; }
     }
 }

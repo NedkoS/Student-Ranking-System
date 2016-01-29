@@ -1,9 +1,9 @@
 ﻿@model StudentRanking.Models.Exam
 
 @{
-    ViewBag.Title = "Create";
-
-<h2>Добавяне на оценка от изпит</h2>
+    ViewBag.Title = "Добавяне на оценка";
+    }
+<h2>Добавяне на оценка</h2>
 
 @using (Html.BeginForm()) {
     @Html.AntiForgeryToken()
@@ -37,13 +37,13 @@
 
 
         <p>
-            <input type="submit" value="Create" />
+            <input type="submit" value="Добави" />
         </p>
     </fieldset>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Обратно към списъка", "Index")
 </div>
 
 @section Scripts {

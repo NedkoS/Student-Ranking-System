@@ -40,8 +40,8 @@ namespace StudentRanking.Ranking
                     List<FacultyRankList> rankList;
 
                     quota = queryManager.getQuota(preference.ProgrammeName, (bool)student.Gender);
-                    rankList = queryManager.getRankListData(preference.ProgrammeName, (bool)student.Gender);
-
+                    rankList = queryManager.getUnenrolledRankListData(preference.ProgrammeName, (bool)student.Gender);
+                    quota -= (queryManager.getRankListData(preference.ProgrammeName, (bool)student.Gender).Count - rankList.Count);
                     double minimalGrade = 0;
                     double studentCount = rankList.Count;
 
@@ -54,9 +54,9 @@ namespace StudentRanking.Ranking
                     if (preference.TotalGrade > minimalGrade &&
                         studentCount >= quota &&
                         ((quota >= 2 &&
-                        rankList[quota - 2].TotalGrade > minimalGrade) ||
+                        rankList[quota - 2].TotalGrade >= minimalGrade) ||
                         (quota == 1 &&
-                        rankList[quota - 1].TotalGrade > minimalGrade)
+                        rankList[quota - 1].TotalGrade >= minimalGrade)
                         ))
                     {
                         var entries = rankList.Where(entry => entry.TotalGrade == minimalGrade);
@@ -151,15 +151,18 @@ namespace StudentRanking.Ranking
 
             //if we try to rate for a second time we should clear the rejected students and
             //those who did not enroll
-            //queryManager.setupIgnoredStudents();
+            foreach (String facultyName in facultyNames)
+            {
+                queryManager.setupIgnoredStudents(facultyName);
+            }
+            
             queryManager.filterRankingData();
-            List<String> ignoreList = queryManager.getIgnoredStudents();
 
             List<Task> tasks = new List<Task>();
             //iterate through every faculty
             foreach (String facultyName in facultyNames)
             {
-                Task facultyTask = Task.Run(() => rankFaculty(facultyName, ignoreList));
+                Task facultyTask = Task.Run(() => rankFaculty(facultyName));
                 tasks.Add(facultyTask);
             }
 
@@ -172,9 +175,10 @@ namespace StudentRanking.Ranking
         }
 
 
-        private void rankFaculty(String facultyName, List<String> ignoreList)
+        private void rankFaculty(String facultyName)
         {
 
+            List<String> ignoreList = queryManager.getIgnoredStudents(facultyName);
             List<String> studentEGNs;
             int count;
             studentEGNs = queryManager.getStudentEGNs(facultyName);

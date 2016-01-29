@@ -102,7 +102,7 @@ namespace StudentRanking.Controllers
             }
 
             // If we got this far, something failed, redisplay form
-            ModelState.AddModelError("", "The user name or password provided is incorrect.");
+            ModelState.AddModelError("", "Грешка в потребителското име или паролата.");
             return View(model);
         }
 
@@ -363,7 +363,7 @@ namespace StudentRanking.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError("UserName", "User name already exists. Please enter a different user name.");
+                        ModelState.AddModelError("UserName", "Потребителското име вече съществува. Моля, въведете друго.");
                     }
                 
             }

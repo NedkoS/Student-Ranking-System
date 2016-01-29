@@ -51,12 +51,12 @@ namespace StudentRanking.Ranking
             unlockManager();
         }
 
-        public List<String> getIgnoredStudents()
+        public List<String> getIgnoredStudents(String facultyName)
         {
             lockManager();
             var firstPrefAccepted = (
                                      from entry in context.FacultyRankLists
-                                     where entry.ProgrammeName.StartsWith(CONST_IGNORED)
+                                     where entry.ProgrammeName.Equals(CONST_IGNORED + " " + facultyName)
                                      select entry.EGN).Distinct();
 
             List<String> result = firstPrefAccepted.ToList();
@@ -64,46 +64,57 @@ namespace StudentRanking.Ranking
             return result;
         }
 
+        private List<Preference> getPreferences(String egn, String facultyName)
+    {
+        List<Preference> preferences = (from preference in context.Preferences
+                                            where preference.EGN == egn
+                                            from program in context.Faculties
+                                            where program.FacultyName == facultyName && program.ProgrammeName == preference.ProgrammeName
+                                            orderby preference.PrefNumber ascending
+                                            select preference).ToList();
+            return preferences;
+    }
         //Used get a list of unenrolled students who were accepted for their first preference
-        public void setupIgnoredStudents()
+        public void setupIgnoredStudents(String facultyName)
         {
             lockManager();
 
-
-            var firstPrefAccepted = (from student in context.Students
-                                     where student.IsEnrolled == false
-                                     from preference in context.Preferences
-                                     where preference.EGN == student.EGN && preference.PrefNumber == 1
-                                     from entry in context.FacultyRankLists
-                                     where entry.EGN == student.EGN && entry.ProgrammeName == preference.ProgrammeName
-                                     select entry).Distinct();
-
-            foreach (FacultyRankList entry in firstPrefAccepted)
+            List<Student> lst = (from student in context.Students
+                                 where student.IsEnrolled == false
+                                 select student).ToList();
+            foreach (Student st in lst)
             {
-                FacultyRankList entry2 = new FacultyRankList();
-                entry2.EGN = entry.EGN;
-                entry2.ProgrammeName = CONST_IGNORED + " " + entry.ProgrammeName;
-                entry2.TotalGrade = 0;
-                //entry.ProgrammeName = CONST_IGNORED + " " + entry.ProgrammeName;
-                
-                context.FacultyRankLists.Attach(entry);
-                context.FacultyRankLists.Remove(entry);
-                context.FacultyRankLists.Add(entry2);
+                List<Preference> pr = getPreferences(st.EGN, facultyName);
+                if (pr.Count == 0)
+                    continue;
 
-                //setRankListState(entry2, EntityState.Modified);
+                Preference firstPref = pr.First();
 
+                List<FacultyRankList> ranklist = (from preference in context.Preferences
+                                                  where preference.EGN == st.EGN && preference.PrefNumber == firstPref.PrefNumber
+                                                  from entry in context.FacultyRankLists
+                                                  where entry.EGN == st.EGN && entry.ProgrammeName == preference.ProgrammeName
+                                                  select entry).Distinct().ToList();
+
+
+                foreach (FacultyRankList entry in ranklist)
+                {
+                    FacultyRankList entry2 = new FacultyRankList();
+                    entry2.EGN = entry.EGN;
+                    entry2.ProgrammeName = CONST_IGNORED + " " + facultyName;
+                    entry2.TotalGrade = 0;
+                    //entry.ProgrammeName = CONST_IGNORED + " " + entry.ProgrammeName;
+
+                    context.FacultyRankLists.Attach(entry);
+                    context.FacultyRankLists.Remove(entry);
+                    context.FacultyRankLists.Add(entry2);
+
+                    //setRankListState(entry2, EntityState.Modified);
+
+                }
             }
-
             context.SaveChanges();
 
-            //var firstPrefAccepted = (from student in context.Students
-            //                        where student.IsEnrolled == false
-            //                        from preference in context.Preferences
-            //                        where preference.EGN == student.EGN && preference.PrefNumber == 1
-            //                        from entry in context.FacultyRankLists
-            //                        where entry.EGN == student.EGN && entry.ProgrammeName == preference.ProgrammeName
-            //                        select entry.EGN).Distinct();
-            //List<String> result = firstPrefAccepted.ToList();
             unlockManager();
         }
 
@@ -448,7 +459,7 @@ namespace StudentRanking.Ranking
                         select rankEntry;
 
             var genderCheck = from student in context.Students
-                              where student.Gender == gender && student.IsEnrolled == true
+                              where student.Gender == gender && student.IsEnrolled == false
                               select student.EGN;
 
             List<FacultyRankList> temp = query.ToList();
