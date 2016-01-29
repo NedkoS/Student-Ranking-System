@@ -19,7 +19,7 @@
             @Html.LabelFor(model => model.StudentEGN)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.StudentEGN)
+            @Html.TextBoxFor(model => model.StudentEGN, new { maxlength = 10, @type = "number", minlength = 10 })
             @Html.ValidationMessageFor(model => model.StudentEGN)
         </div>
 
