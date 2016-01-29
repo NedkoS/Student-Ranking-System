@@ -18,7 +18,17 @@ namespace StudentRanking.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            QueryManager queryManager = QueryManager.getInstance();
+            RankingDates dates = queryManager.getRankingDatesContent().First();
+            CampaignRankingDates model = new CampaignRankingDates
+            {
+                FirstRankingDate = Convert.ToDateTime(dates.FirstRankingDate),
+                StudentPreferenceFirstDate = Convert.ToDateTime(dates.PreferrencesFirstDate),
+                StudentPreferenceLastDate = Convert.ToDateTime(dates.PreferrencesLastDate),
+                SecondRankingDate = Convert.ToDateTime(dates.SecondRankingDate),
+                ThirdRankingDate = Convert.ToDateTime(dates.ThirdRankingDate)
+            };
+            return View(model);
         }
 
 

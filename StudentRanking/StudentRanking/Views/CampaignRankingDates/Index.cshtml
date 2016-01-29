@@ -5,6 +5,7 @@
 }
 
 <h2>Етапи на кампанията</h2>
+<p class="message-error">Датите трябва да бъдат във формат: ГГГГ-ММ-ДД.</p>
 
 @using (Html.BeginForm())
 {
@@ -15,7 +16,7 @@
         <legend>Exam</legend>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.StudentPreferenceFirstDate)
+            @Html.Label("Начална дата за подаване на желания:")
         </div>
         <div class="editor-field">
             @Html.EditorFor(model => model.StudentPreferenceFirstDate, new { @id = "firstPreferencesDate" })
@@ -23,17 +24,17 @@
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.StudentPreferenceLastDate)
+            @Html.Label("Крайна дата за подаване на желания:")
         </div>
         <div class="editor-field">
 
             @Html.EditorFor(model => model.StudentPreferenceLastDate, new { @id = "secondPreferencesDate" })
-                @Html.ValidationMessageFor(model => model.StudentPreferenceLastDate)
+            @Html.ValidationMessageFor(model => model.StudentPreferenceLastDate)
             @*@Html.DropDownListFor(model => model.ExamName, ViewData["currentExamName"] as SelectList)*@
         </div>
         <br>
         <div class="editor-label">
-            @Html.LabelFor(model => model.FirstRankingDate)
+            @Html.Label("Дата за първо класиране:")
         </div>
         <div class="editor-field">
             @Html.EditorFor(model => model.FirstRankingDate, new { @id = "firstRankingDate" })
@@ -41,7 +42,7 @@
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.SecondRankingDate)
+            @Html.Label("Дата за второ класиране:")
         </div>
         <div class="editor-field">
             @Html.EditorFor(model => model.SecondRankingDate, new { @id = "secondRankingDate" })
@@ -50,16 +51,12 @@
 
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.ThirdRankingDate)
+            @Html.Label("Дата за трето класиране:")
         </div>
         <div class="editor-field">
             @Html.EditorFor(model => model.ThirdRankingDate, new { @id = "thirdRankingDate" })
             @Html.ValidationMessageFor(model => model.ThirdRankingDate)
         </div>
-
-
-
-
 
         <p>
             <input type="submit" value="Запиши" onclick="javascript:SubmitClick()"  />
