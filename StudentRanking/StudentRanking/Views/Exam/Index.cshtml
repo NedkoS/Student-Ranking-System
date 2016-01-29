@@ -2,27 +2,7 @@
 
 @section Scripts
 {
-    <script type="text/javascript">
-
-        function SubmitClick() {
-            $.ajax({
-                type: 'POST',
-                url: "/Exam/Index",
-                data: {
-                    egn: $("#egn").val()
-                },
-                success: function (data) {
-                    $('#resultTable').html(data);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    alert(errorThrown);
-                }
-
-            });
-
-
-        };
-
+    <script type="text/javascript" src="~/JavaScript/Exam.js">   
     </script>
 }
 
@@ -47,7 +27,7 @@
 
 <label>Въведете ЕГН-то на студента</label>
 @Html.TextBox("egn")
-<input type="submit" value="Потвърди" onclick="javascript:SubmitClick()" />
+<input type="submit" value="Потвърди" onclick="javascript: showExams()" />
 
 <div id="resultTable">
     @Html.Partial("_StudentExamsGrades", Model)

@@ -56,14 +56,6 @@ namespace StudentRanking.Controllers
 
         public ActionResult Create()
         {
-            //List<String> programmes = new List<String>();
-
-            //programmes.Add("Математика Матура");
-            //programmes.Add("Математика Диплома");
-            //programmes.Add("Математика 1");
-            //programmes.Add("Математика 2");
-
-
             ViewData["currentExamName"] = new SelectList(queryManager.getExamNames());
             return View();
         }

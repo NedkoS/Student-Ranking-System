@@ -2,11 +2,8 @@
 
 @{
     ViewBag.Title = "Create";
-    //float fGrade = 2;// float.Parse(Model.Grade.ToString());
-    //double dGrade = Model.Grade;
-}
 
-<h2>Create</h2>
+<h2>Добавяне на оценка от изпит</h2>
 
 @using (Html.BeginForm()) {
     @Html.AntiForgeryToken()
@@ -27,10 +24,6 @@
             @Html.LabelFor(model => model.ExamName)
         </div>
         <div class="editor-field">
-
-            @*@Html.EditorFor(model => model.ExamName)
-            @Html.ValidationMessageFor(model => model.ExamName)*@
-
             @Html.DropDownListFor(model => model.ExamName, ViewData["currentExamName"] as SelectList)
         </div>
         <br>

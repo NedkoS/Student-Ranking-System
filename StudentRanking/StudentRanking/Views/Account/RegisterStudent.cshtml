@@ -24,50 +24,6 @@
                 @Html.LabelFor(m => m.Password)
                 @Html.PasswordFor(m => m.Password)
             </li>
-            @*<li>
-                @Html.LabelFor(m => m.FirstName)
-                @Html.TextBoxFor(m => m.FirstName)
-            </li>
-            <li>
-                @Html.LabelFor(m => m.LastName)
-                @Html.TextBoxFor(m => m.LastName)
-            </li>
-            <li>
-                @Html.LabelFor(m => m.EGN)
-                @Html.TextBoxFor(m => m.EGN)
-            </li>
-            <li>
-                <label>Gender</label>
-                <label style="font-size: 1.1em;float:left;margin-right:50px">
-                    @Html.RadioButtonFor(model => model.Gender, true,
-                              new { style = "border: 1px solid #e2e2e2;margin: 5px 0 6px 0;padding: 5px;width: 14px" })
-                    Male
-                </label>
-
-                <label style="font-size: 1.1em">
-                    @Html.RadioButtonFor(model => model.Gender, false,
-                              new { style = "border: 1px solid #e2e2e2;margin: 5px 0 6px 0;padding: 5px;width: 14px" })
-                    Female
-                </label>
-            </li>*@
-
-            @*
-                @{
-                    List<SelectListItem> genderList = new List<SelectListItem>();
-                    genderList.Add(new SelectListItem { Text = "Male", Value = "true"});
-                    genderList.Add(new SelectListItem { Text = "Female", Value = "false"});
-                }
-
-                <li>
-                    @Html.LabelFor(m => m.Gender)
-                    @Html.DropDownListFor(m => m.Gender, genderList, "-- Select Gender --")
-                </li>
-            *@
-
-            @*<li>
-                @Html.LabelFor(m => m.Email)
-                @Html.TextBoxFor(m => m.Email)
-            </li>*@
         </ol>
         <input type="submit" value="Register" />
     </fieldset>
