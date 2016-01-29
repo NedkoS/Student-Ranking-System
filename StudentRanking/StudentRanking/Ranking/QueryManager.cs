@@ -12,6 +12,7 @@ namespace StudentRanking.Ranking
     public class QueryManager
     {
         public const String CONST_REJECTED = "rejected";
+        public const String CONST_IGNORED = "ignored";
         private UsersContext context;
         private static QueryManager queryManager = new QueryManager();
 
@@ -27,8 +28,9 @@ namespace StudentRanking.Ranking
 
         private void unlockManager()
         {
-            Monitor.Exit(this);
             refresh();
+            Monitor.Exit(this);
+            
         }
 
         public void setContext(UsersContext context)
@@ -41,15 +43,80 @@ namespace StudentRanking.Ranking
             return queryManager;
         }
 
+        public void setRankListState(FacultyRankList entry, EntityState state)
+        {
+            lockManager();
+            context.Entry(entry).State = state;
+            context.SaveChanges();
+            unlockManager();
+        }
+
+        public List<String> getIgnoredStudents()
+        {
+            lockManager();
+            var firstPrefAccepted = (
+                                     from entry in context.FacultyRankLists
+                                     where entry.ProgrammeName.StartsWith(CONST_IGNORED)
+                                     select entry.EGN).Distinct();
+
+            List<String> result = firstPrefAccepted.ToList();
+            unlockManager();
+            return result;
+        }
+
+        //Used get a list of unenrolled students who were accepted for their first preference
+        public void setupIgnoredStudents()
+        {
+            lockManager();
+
+
+            var firstPrefAccepted = (from student in context.Students
+                                     where student.IsEnrolled == false
+                                     from preference in context.Preferences
+                                     where preference.EGN == student.EGN && preference.PrefNumber == 1
+                                     from entry in context.FacultyRankLists
+                                     where entry.EGN == student.EGN && entry.ProgrammeName == preference.ProgrammeName
+                                     select entry).Distinct();
+
+            foreach (FacultyRankList entry in firstPrefAccepted)
+            {
+                FacultyRankList entry2 = new FacultyRankList();
+                entry2.EGN = entry.EGN;
+                entry2.ProgrammeName = CONST_IGNORED + " " + entry.ProgrammeName;
+                entry2.TotalGrade = 0;
+                //entry.ProgrammeName = CONST_IGNORED + " " + entry.ProgrammeName;
+                
+                context.FacultyRankLists.Attach(entry);
+                context.FacultyRankLists.Remove(entry);
+                context.FacultyRankLists.Add(entry2);
+
+                //setRankListState(entry2, EntityState.Modified);
+
+            }
+
+            context.SaveChanges();
+
+            //var firstPrefAccepted = (from student in context.Students
+            //                        where student.IsEnrolled == false
+            //                        from preference in context.Preferences
+            //                        where preference.EGN == student.EGN && preference.PrefNumber == 1
+            //                        from entry in context.FacultyRankLists
+            //                        where entry.EGN == student.EGN && entry.ProgrammeName == preference.ProgrammeName
+            //                        select entry.EGN).Distinct();
+            //List<String> result = firstPrefAccepted.ToList();
+            unlockManager();
+        }
+
         //Clearing the rejected students and
         //those who did not enroll
         public void filterRankingData()
         {
             lockManager();
+
             var entriesToDelete = from student in context.Students
                                   from entry in context.FacultyRankLists
                                   where entry.EGN == student.EGN
-                                  where student.IsEnrolled == false || (entry.ProgrammeName.StartsWith(QueryManager.CONST_REJECTED + " "))
+                                  where (student.IsEnrolled == false && !entry.ProgrammeName.StartsWith(CONST_IGNORED)) || (entry.ProgrammeName.StartsWith(QueryManager.CONST_REJECTED + " "))
                                   select entry;
 
             foreach (FacultyRankList entry in entriesToDelete)
