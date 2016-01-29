@@ -42,15 +42,26 @@
             <label>Имейл</label>
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.Email)
+            @Html.TextBoxFor(m => m.Email, new { @type = "email" })
             @Html.ValidationMessageFor(model => model.Email)
         </div>
 
         <div class="editor-label">
             <label>Пол</label>
         </div>
+
         <div class="editor-field">
-            @Html.EditorFor(model => model.Gender)
+            <label style="font-size: 1.1em;float:left;margin-right:50px">
+                @Html.RadioButtonFor(model => model.Gender, true,
+                              new { style = "border: 1px solid #e2e2e2;margin: 5px 0 6px 0;padding: 5px;width: 14px" })
+                Мъж
+            </label>
+
+            <label style="font-size: 1.1em">
+                @Html.RadioButtonFor(model => model.Gender, false,
+                              new { style = "border: 1px solid #e2e2e2;margin: 5px 0 6px 0;padding: 5px;width: 14px" })
+                Жена
+            </label>
             @Html.ValidationMessageFor(model => model.Gender)
         </div>
 
