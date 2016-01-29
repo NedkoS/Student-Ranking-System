@@ -187,12 +187,12 @@ namespace StudentRanking.Controllers
         //
         // GET: /Account/Manage
 
-        [Authorize(Roles = "admin")]
+        
         public ActionResult Manage(ManageMessageId? message)
         {
             ViewBag.StatusMessage =
-                message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
-                : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
+                message == ManageMessageId.ChangePasswordSuccess ? "Паролата беше успешно променена."
+                : message == ManageMessageId.SetPasswordSuccess ? "Паролата беше успешно създадена."
                 : message == ManageMessageId.RemoveLoginSuccess ? "The external login was removed."
                 : "";
             ViewBag.HasLocalPassword = OAuthWebSecurity.HasLocalAccount(WebSecurity.GetUserId(User.Identity.Name));
@@ -205,7 +205,6 @@ namespace StudentRanking.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "admin")]
         public ActionResult Manage(LocalPasswordModel model)
         {
             
@@ -233,7 +232,7 @@ namespace StudentRanking.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError("", "The current password is incorrect or the new password is invalid.");
+                        ModelState.AddModelError("", "Въведената текуща парола е неправилна или новата парола е невалидна.");
                     }
                 }
             }
