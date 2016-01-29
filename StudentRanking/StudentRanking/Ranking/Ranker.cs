@@ -153,16 +153,17 @@ namespace StudentRanking.Ranking
 
             List<String> facultyNames = queryManager.getFacultyNames();
 
-
             //if we try to rate for a second time we should clear the rejected students and
             //those who did not enroll
+            queryManager.setupIgnoredStudents();
             queryManager.filterRankingData();
+            List<String> ignoreList = queryManager.getIgnoredStudents();
 
             List<Task> tasks = new List<Task>();
             //iterate through every faculty
             foreach (String facultyName in facultyNames)
             {
-                Task facultyTask = Task.Run(() => rankFaculty(facultyName));
+                Task facultyTask = Task.Run(() => rankFaculty(facultyName, ignoreList));
                 tasks.Add(facultyTask);
             }
 
@@ -175,7 +176,7 @@ namespace StudentRanking.Ranking
         }
 
 
-        private void rankFaculty(String facultyName)
+        private void rankFaculty(String facultyName, List<String> ignoreList)
         {
 
             List<String> studentEGNs;
@@ -193,13 +194,11 @@ namespace StudentRanking.Ranking
                     Student student;
                     bool isApproved;
 
-
                     student = queryManager.getStudent(EGN);
                     isApproved = queryManager.getApprovedStudentsEGNs(facultyName).Contains(EGN);
 
-
                     //if the student is already approved for a programme, skip him/her
-                    if (!isApproved)
+                    if (!isApproved && !ignoreList.Contains(EGN))
                     {
                         serve(facultyName, student);
                         count++;

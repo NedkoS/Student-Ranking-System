@@ -24,7 +24,7 @@
 {
     @Html.ActionLink("Начало", "Menu", "Admin")
 }
-        
+
 @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" })) {
             @Html.AntiForgeryToken()
             <a href="javascript:document.getElementById('logoutForm').submit()">Изход</a>
