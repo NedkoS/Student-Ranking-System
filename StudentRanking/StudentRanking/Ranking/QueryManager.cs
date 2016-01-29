@@ -611,6 +611,7 @@ namespace StudentRanking.Ranking
         public void removeStudent(Student student)
         {
             lockManager();
+            context.Students.Attach(student);
             context.Students.Remove(student);
             context.SaveChanges();
             unlockManager();

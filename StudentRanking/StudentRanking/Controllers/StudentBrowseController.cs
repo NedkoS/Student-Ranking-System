@@ -196,9 +196,6 @@ namespace StudentRanking.Controllers
                 return HttpNotFound();
             }
 
-            Roles.RemoveUserFromRole(student.EGN, "student");
-            Membership.DeleteUser(student.EGN);
-
             return View(student);
         }
 
@@ -210,7 +207,19 @@ namespace StudentRanking.Controllers
         public ActionResult DeleteConfirmed(string id)
         {
             Student student = queryManager.findStudent(id);
-            queryManager.removeStudent(student);
+
+            string[] roleNames = Roles.GetRolesForUser(id);
+            foreach (string role in roleNames)
+            {
+                if (role.Contains("student"))
+                {
+                    Roles.RemoveUserFromRole(student.EGN, "student");
+                    Membership.DeleteUser(student.EGN);
+                    break;
+                }
+            }
+
+            queryManager.removeStudent(student);               
             return RedirectToAction("Index");
         }
 
