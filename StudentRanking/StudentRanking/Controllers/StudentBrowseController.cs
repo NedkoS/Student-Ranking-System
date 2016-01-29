@@ -25,7 +25,6 @@ namespace StudentRanking.Controllers
 
         public ActionResult Index(String egn = "")
         {
-
             //Ranker ranker = new Ranker(db);
             //ranker.start();
 
@@ -50,10 +49,19 @@ namespace StudentRanking.Controllers
 
             //System.IO.File.WriteAllText(@"D:\WriteText.txt", text);
             
+            Student student = queryManager.findStudent(egn);
+
             if (egn == "")
+            {
+                ViewBag.isInitial = true;
                 return View(queryManager.getStudents());
-            else
-                return Details(egn);
+            } else if (student == null)
+            {
+                ViewBag.isInitial = false;
+                ViewBag.isStudent = false;
+                return View(queryManager.getStudents());
+            }
+            else return Details(egn);
         }
 
         //
@@ -75,8 +83,10 @@ namespace StudentRanking.Controllers
             Student student = queryManager.findStudent(id);
             if (student == null)
             {
-                return HttpNotFound();
+                return RedirectToAction("Index", "StudentBrowse", new { egn = id });
             }
+
+            ViewBag.isStudent = true;
             return View(student);
         }
 
@@ -186,9 +196,6 @@ namespace StudentRanking.Controllers
                 return HttpNotFound();
             }
 
-            Roles.RemoveUserFromRole(student.EGN, "student");
-            Membership.DeleteUser(student.EGN);
-
             return View(student);
         }
 
@@ -200,7 +207,19 @@ namespace StudentRanking.Controllers
         public ActionResult DeleteConfirmed(string id)
         {
             Student student = queryManager.findStudent(id);
-            queryManager.removeStudent(student);
+
+            string[] roleNames = Roles.GetRolesForUser(id);
+            foreach (string role in roleNames)
+            {
+                if (role.Contains("student"))
+                {
+                    Roles.RemoveUserFromRole(student.EGN, "student");
+                    Membership.DeleteUser(student.EGN);
+                    break;
+                }
+            }
+
+            queryManager.removeStudent(student);               
             return RedirectToAction("Index");
         }
 

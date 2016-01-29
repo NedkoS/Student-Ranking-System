@@ -144,6 +144,7 @@ namespace StudentRanking.Controllers
         [HttpPost]
         public ActionResult Index(String faculty, String programmeName)
         {
+            ViewBag.isSubmit = true;
             //генериране на combobox
             List<String> l = programmes.Keys.ToList<string>();
             l.Insert(0, "Please Select");

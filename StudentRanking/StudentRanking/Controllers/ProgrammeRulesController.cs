@@ -20,11 +20,8 @@ namespace StudentRanking.Controllers
         //
         // GET: /ProgrammeRules/
 
-        public ProgrammeRulesController()
-            : base()
+        public ProgrammeRulesController() : base()
         {
-
-
             var faculties = queryManager.getFaculties();
 
             foreach (var faculty in faculties)
@@ -59,22 +56,18 @@ namespace StudentRanking.Controllers
             SelectList faculties = new SelectList(l);
 
             ViewData["faculties"] = faculties;
-
             model = getProgrammeRules(programmeName);
 
             return PartialView("_ProgrammePropertiesTable", model);
         }
 
-        //[Authorize(Roles = "admin")]
         public ActionResult Index()
         {
-
             List<String> l = programmes.Keys.ToList<string>();
             l.Insert(0, "Моля изберете");
             SelectList faculties = new SelectList(l);
 
             ViewData["faculties"] = faculties;
-
 
             return View(model);
         }
@@ -82,8 +75,6 @@ namespace StudentRanking.Controllers
         [HttpPost]
         public void SaveCounts(int maleCount, int femaleCount, string programmeName)
         {
-            //ako crashnat int-ovete napravi si go sys string parametri
-           
             var rule = queryManager.findProgrammeRule(programmeName);
             if (rule == null)
             {
@@ -145,7 +136,7 @@ namespace StudentRanking.Controllers
             {
                 foreach (var formula in formulae)
                 {
-                    ProgrammeProperties rule = getProgrammeRule(formula);// new ProgrammeProperties();
+                    ProgrammeProperties rule = getProgrammeRule(formula);
                     rule.MaleCount = pr.MaleCount;
                     rule.FemaleCount = pr.FemaleCount;
                     rule.ProgrammeName = programmeName;
@@ -165,16 +156,12 @@ namespace StudentRanking.Controllers
             {
                 foreach (var formula in formulae)
                 {
-                    ProgrammeProperties rule = getProgrammeRule(formula);// new ProgrammeProperties();
+                    ProgrammeProperties rule = getProgrammeRule(formula);
                     result.Add(rule);
                 }
             }
-            
 
             return result;
         }
-
     }
-
-
 }

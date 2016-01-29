@@ -27,6 +27,26 @@ namespace StudentRanking.Controllers
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
+            string[] roleNames = Roles.GetRolesForUser(User.Identity.Name);
+            foreach (string role in roleNames)
+            {
+                if (role.Contains("admin") && Request.IsAuthenticated)
+                {
+                    return RedirectToAction("Menu", "Admin");
+                }
+            }
+
+            if (Request.IsAuthenticated )
+            {
+                QueryManager mng = QueryManager.getInstance();
+                DateTime end = Convert.ToDateTime(mng.getCampaignDates().FirstRankingDate);
+                if (DateTime.Today > end)
+                {
+                    return RedirectToAction("Index", "StudentRankingInformation");
+                }
+
+                return RedirectToAction("Index", "StudentPreferences");
+            }
             return View();
         }
 

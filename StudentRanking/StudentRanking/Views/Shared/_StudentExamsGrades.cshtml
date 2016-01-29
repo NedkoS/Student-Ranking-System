@@ -5,6 +5,10 @@
 }
 
 <div id="resultTable">
+    @if (ViewBag.isStudent != null && !ViewBag.isStudent)
+    {
+        <div class="message-error">Няма такъв студент.</div>
+    }
     <table>
         @if (Model.Count() != 0)
         {
@@ -41,7 +45,6 @@
                     </td>
                 </tr>
             }
-       
         }
     </table>
 </div>

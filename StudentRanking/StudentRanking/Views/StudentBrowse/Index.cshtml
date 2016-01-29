@@ -24,6 +24,10 @@
 {
     @Html.TextBox("id")
     <input type="submit" value="Търсене" />
+    if (!ViewBag.isInitial && !ViewBag.isStudent)
+    {
+        <div class="message-error">Няма такъв студент.</div>
+    }
 }
 
         <p>
@@ -68,11 +72,9 @@
                 </td>
                 <td>
                     <label>@(((bool)item.Gender)?"Мъж":"Жена")</label>
-                    <!--Html.DisplayFor(modelItem => ((bool)item.Gender)? "Male" : "Female")-->
                 </td>
                 <td>
                     <label>@(((bool)item.IsEnrolled) ? "Да" : "Не")</label>
-                   <!-- Html.DisplayFor(modelItem => item.IsEnrolled)-->
                 </td>
                 <td>
                     @Html.ActionLink("Редактиране", "Edit", new { id=item.EGN }) |

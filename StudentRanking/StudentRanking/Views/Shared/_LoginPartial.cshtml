@@ -3,7 +3,6 @@
     string name = User.Identity.Name;
     if (name != null)
     {
-
         string[] roleNames = Roles.GetRolesForUser(name);
         foreach (string role in roleNames)
         {
@@ -13,28 +12,19 @@
             }
         } 
     }
-    
 }
-
 
 @if (Request.IsAuthenticated) {
     <text>
         Здравей, @Html.ActionLink(User.Identity.Name, "Manage", "Account", routeValues: null, htmlAttributes: new { @class = "username", title = "Manage" })!
-@if (isAdmin)
-{
-    @Html.ActionLink("Начало", "Menu", "Admin")
-}
+        @if (isAdmin)
+        {
+            @Html.ActionLink("Начало", "Menu", "Admin")
+        }
 
-@using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" })) {
+        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" })) {
             @Html.AntiForgeryToken()
             <a href="javascript:document.getElementById('logoutForm').submit()">Изход</a>
         }
     </text>
-} else {
-    @*<ul>
-        <li>@Html.ActionLink("Register", "RegisterStudent", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-        <li>@Html.ActionLink("Register Admin", "RegisterAdmin", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
-        <li>@Html.ActionLink("Admin Menu", "Menu", "Admin")</li>
-    </ul>*@
 }

@@ -22,12 +22,19 @@ namespace StudentRanking.Controllers
 
         public ActionResult Index()
         {
-            return View( new List<Exam>());
+            ViewBag.isStudent = true;
+            return View(new List<Exam>());
         }
         [HttpPost]
         public ActionResult Index(String egn)
         {
-
+            ViewBag.isStudent = true;
+            Student student = queryManager.findStudent(egn);
+            if (student == null)
+            {
+                ViewBag.isStudent = false;
+            }
+            
             return PartialView("_StudentExamsGrades", queryManager.getExamsOfStudent(egn));
         }
 
@@ -49,14 +56,6 @@ namespace StudentRanking.Controllers
 
         public ActionResult Create()
         {
-            //List<String> programmes = new List<String>();
-
-            //programmes.Add("Математика Матура");
-            //programmes.Add("Математика Диплома");
-            //programmes.Add("Математика 1");
-            //programmes.Add("Математика 2");
-
-
             ViewData["currentExamName"] = new SelectList(queryManager.getExamNames());
             return View();
         }
